@@ -1,0 +1,38 @@
+# Archivos de configuración sensibles
+config/database.php
+config/mail.php
+*.env
+
+# Uploads de usuarios
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Logs
+storage/logs/*.log
+!storage/logs/.gitkeep
+
+# Backups
+storage/backups/*
+!storage/backups/database/.gitkeep
+!storage/backups/files/.gitkeep
+
+# Archivos temporales
+storage/temp/*
+!storage/temp/.gitkeep
+
+# Dependencias
+vendor/
+node_modules/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
