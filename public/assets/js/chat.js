@@ -1,5 +1,5 @@
 /**
- * CHAT WIDGET JURÍDICO - JAVASCRIPT
+ * CHAT WIDGET JURÍDICO - JAVASCRIPT CORREGIDO
  * Integración con n8n webhook para asistente legal IA
  */
 
@@ -13,6 +13,7 @@ class LegalChatWidget {
         this.isTyping = false;
         this.messageHistory = [];
         this.sessionId = this.generateSessionId();
+        this.isInitialized = false; // ✅ PREVENIR DOBLE INICIALIZACIÓN
         
         // Elementos del DOM
         this.chatWidget = null;
@@ -28,6 +29,12 @@ class LegalChatWidget {
     }
 
     init() {
+        // ✅ PREVENIR DOBLE INICIALIZACIÓN
+        if (this.isInitialized) {
+            console.warn('Chat widget ya está inicializado');
+            return;
+        }
+
         // Esperar a que el DOM esté listo
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setupChat());
@@ -37,44 +44,110 @@ class LegalChatWidget {
     }
 
     setupChat() {
-        this.initializeElements();
-        this.bindEvents();
-        this.showWelcomeNotification();
+        // ✅ VERIFICAR SI YA EXISTE UNA INSTANCIA
+        if (window.legalChatInstance) {
+            console.warn('Ya existe una instancia del chat');
+            return;
+        }
+
+        // ✅ LIMPIAR CUALQUIER CHAT WIDGET EXISTENTE
+        this.cleanupExistingChat();
         
-        console.log('🤖 Chat Widget Jurídico inicializado');
+        this.initializeElements();
+        
+        // ✅ VERIFICAR QUE LOS ELEMENTOS EXISTEN
+        if (!this.validateElements()) {
+            console.error('No se pudieron inicializar todos los elementos del chat');
+            return;
+        }
+        
+        this.bindEvents();
+        this.setupNotificationSystem();
+        this.isInitialized = true;
+        
+        // ✅ REGISTRAR INSTANCIA GLOBAL
+        window.legalChatInstance = this;
+        
+        console.log('🤖 Chat Widget Jurídico inicializado correctamente');
     }
 
-    initializeElements() {
-        this.chatWidget = document.getElementById('chat-widget');
-        this.chatToggle = document.getElementById('chat-toggle');
-        this.chatWindow = document.getElementById('chat-window');
-        this.chatMessages = document.getElementById('chat-messages');
-        this.chatInput = document.getElementById('chat-input');
-        this.chatSend = document.getElementById('chat-send');
-        this.typingIndicator = document.getElementById('typing-indicator');
-        this.chatOverlay = document.getElementById('chat-overlay');
-        
-        if (!this.chatWidget) {
-            console.error('Chat widget no encontrado. Asegúrate de añadir el HTML del chat.');
-            return;
+    // ✅ LIMPIAR ELEMENTOS DUPLICADOS
+    cleanupExistingChat() {
+        // Remover notificaciones existentes
+        const existingNotifications = document.querySelectorAll('.chat-notification');
+        existingNotifications.forEach(notification => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        });
+
+        // Limpiar overlays duplicados
+        const existingOverlays = document.querySelectorAll('.chat-overlay');
+        if (existingOverlays.length > 1) {
+            for (let i = 1; i < existingOverlays.length; i++) {
+                existingOverlays[i].remove();
+            }
         }
     }
 
+    initializeElements() {
+        // ✅ USAR QUERYSELECTOR MÁS ESPECÍFICO
+        this.chatWidget = document.querySelector('#chat-widget');
+        this.chatToggle = document.querySelector('#chat-toggle');
+        this.chatWindow = document.querySelector('#chat-window');
+        this.chatMessages = document.querySelector('#chat-messages');
+        this.chatInput = document.querySelector('#chat-input');
+        this.chatSend = document.querySelector('#chat-send');
+        this.typingIndicator = document.querySelector('#typing-indicator');
+        this.chatOverlay = document.querySelector('#chat-overlay');
+    }
+
+    // ✅ VALIDAR QUE TODOS LOS ELEMENTOS EXISTEN
+    validateElements() {
+        const requiredElements = [
+            'chatWidget', 'chatToggle', 'chatWindow', 
+            'chatMessages', 'chatInput', 'chatSend'
+        ];
+        
+        const missingElements = requiredElements.filter(element => !this[element]);
+        
+        if (missingElements.length > 0) {
+            console.error('Elementos faltantes:', missingElements);
+            return false;
+        }
+        
+        return true;
+    }
+
     bindEvents() {
+        // ✅ USAR ADDEVENTLISTENER CON OPCIONES
+        const eventOptions = { passive: false };
+
         // Toggle del chat
         if (this.chatToggle) {
-            this.chatToggle.addEventListener('click', () => this.toggleChat());
+            this.chatToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleChat();
+            }, eventOptions);
         }
 
         // Minimizar chat
         const minimizeBtn = document.getElementById('chat-minimize');
         if (minimizeBtn) {
-            minimizeBtn.addEventListener('click', () => this.closeChat());
+            minimizeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.closeChat();
+            }, eventOptions);
         }
 
         // Enviar mensaje
         if (this.chatSend) {
-            this.chatSend.addEventListener('click', () => this.sendMessage());
+            this.chatSend.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.sendMessage();
+            }, eventOptions);
         }
 
         // Input del chat
@@ -95,40 +168,76 @@ class LegalChatWidget {
         // Sugerencias
         const suggestionBtns = document.querySelectorAll('.suggestion-btn');
         suggestionBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
                 const message = btn.getAttribute('data-message');
-                this.chatInput.value = message;
-                this.sendMessage();
+                if (this.chatInput) {
+                    this.chatInput.value = message;
+                    this.sendMessage();
+                }
             });
         });
 
         // Overlay para móviles
         if (this.chatOverlay) {
-            this.chatOverlay.addEventListener('click', () => this.closeChat());
+            this.chatOverlay.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.closeChat();
+            });
         }
 
-        // Cerrar con tecla Escape
+        // ✅ CERRAR CON TECLA ESCAPE
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.isOpen) {
                 this.closeChat();
             }
         });
+
+        // ✅ PREVENIR CONFLICTOS CON OTROS CLICKS
+        if (this.chatWidget) {
+            this.chatWidget.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
     }
 
     generateSessionId() {
         return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
 
+    // ✅ MEJORAR SISTEMA DE NOTIFICACIONES
+    setupNotificationSystem() {
+        setTimeout(() => {
+            this.showWelcomeNotification();
+        }, 2000);
+    }
+
     showWelcomeNotification() {
         const notification = document.getElementById('chat-notification');
-        if (notification) {
-            setTimeout(() => {
-                notification.style.display = 'block';
-            }, 2000);
+        if (notification && !this.isOpen) {
+            notification.style.display = 'block';
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(10px) scale(0.8)';
             
+            // ✅ ANIMACIÓN MEJORADA
             setTimeout(() => {
-                notification.style.display = 'none';
-            }, 7000);
+                notification.style.transition = 'all 0.5s ease';
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateY(0) scale(1)';
+            }, 100);
+            
+            // ✅ OCULTAR DESPUÉS DE 5 SEGUNDOS
+            setTimeout(() => {
+                if (notification && !this.isOpen) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(-10px) scale(0.8)';
+                    setTimeout(() => {
+                        if (notification) {
+                            notification.style.display = 'none';
+                        }
+                    }, 500);
+                }
+            }, 5000);
         }
     }
 
@@ -140,10 +249,15 @@ class LegalChatWidget {
         }
     }
 
+    // ✅ MÉTODO OPENCHAT MEJORADO
     openChat() {
-        if (!this.chatWindow) return;
+        if (!this.chatWindow || this.isOpen) return;
         
         this.isOpen = true;
+        
+        // ✅ PREVENIR CONFLICTOS DE ESTILO
+        document.body.classList.add('chat-active');
+        
         this.chatWindow.classList.add('active');
         this.chatToggle.classList.add('active');
         
@@ -155,9 +269,11 @@ class LegalChatWidget {
             closeIcon.style.display = 'block';
         }
 
-        // Overlay en móviles
+        // ✅ OVERLAY MEJORADO EN MÓVILES
         if (window.innerWidth <= 480 && this.chatOverlay) {
             this.chatOverlay.classList.add('active');
+            // ✅ PREVENIR SCROLL DEL BODY EN MÓVIL
+            document.body.style.overflow = 'hidden';
         }
 
         // Ocultar notificación
@@ -166,9 +282,9 @@ class LegalChatWidget {
             notification.style.display = 'none';
         }
 
-        // Focus en input
+        // ✅ FOCUS MEJORADO
         setTimeout(() => {
-            if (this.chatInput) {
+            if (this.chatInput && this.isOpen) {
                 this.chatInput.focus();
             }
         }, 300);
@@ -176,10 +292,16 @@ class LegalChatWidget {
         this.scrollToBottom();
     }
 
+    // ✅ MÉTODO CLOSECHAT MEJORADO
     closeChat() {
-        if (!this.chatWindow) return;
+        if (!this.chatWindow || !this.isOpen) return;
         
         this.isOpen = false;
+        
+        // ✅ LIMPIAR CLASES DEL BODY
+        document.body.classList.remove('chat-active');
+        document.body.style.overflow = ''; // ✅ RESTAURAR SCROLL
+        
         this.chatWindow.classList.remove('active');
         this.chatToggle.classList.remove('active');
         
@@ -191,7 +313,7 @@ class LegalChatWidget {
             closeIcon.style.display = 'none';
         }
 
-        // Quitar overlay
+        // ✅ QUITAR OVERLAY CORRECTAMENTE
         if (this.chatOverlay) {
             this.chatOverlay.classList.remove('active');
         }
@@ -292,8 +414,12 @@ class LegalChatWidget {
         this.chatMessages.appendChild(messageElement);
         this.scrollToBottom();
 
-        // Animar entrada del mensaje
+        // ✅ ANIMAR ENTRADA DEL MENSAJE
+        messageElement.style.opacity = '0';
+        messageElement.style.transform = 'translateY(10px)';
+        
         setTimeout(() => {
+            messageElement.style.transition = 'all 0.3s ease';
             messageElement.style.opacity = '1';
             messageElement.style.transform = 'translateY(0)';
         }, 50);
@@ -372,11 +498,16 @@ class LegalChatWidget {
     hideSuggestions() {
         const suggestions = document.getElementById('chat-suggestions');
         if (suggestions && this.messageHistory.length > 0) {
-            suggestions.style.display = 'none';
+            suggestions.style.transition = 'all 0.3s ease';
+            suggestions.style.opacity = '0';
+            suggestions.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                suggestions.style.display = 'none';
+            }, 300);
         }
     }
 
-    // Método público para enviar mensajes programáticamente
+    // ✅ MÉTODOS PÚBLICOS PARA API
     sendProgrammaticMessage(message) {
         if (this.chatInput) {
             this.chatInput.value = message;
@@ -384,12 +515,10 @@ class LegalChatWidget {
         }
     }
 
-    // Método para obtener el historial de mensajes
     getMessageHistory() {
         return this.messageHistory;
     }
 
-    // Método para limpiar el chat
     clearChat() {
         if (this.chatMessages) {
             // Mantener solo el mensaje de bienvenida
@@ -405,10 +534,11 @@ class LegalChatWidget {
         const suggestions = document.getElementById('chat-suggestions');
         if (suggestions) {
             suggestions.style.display = 'flex';
+            suggestions.style.opacity = '1';
+            suggestions.style.transform = 'translateY(0)';
         }
     }
 
-    // Método para cambiar el estado del chat
     setStatus(status, message) {
         const statusElement = document.querySelector('.chat-status');
         const statusDot = document.querySelector('.status-dot');
@@ -421,13 +551,14 @@ class LegalChatWidget {
         }
     }
 
-    // Método de diagnóstico
+    // ✅ MÉTODO DE DIAGNÓSTICO
     diagnose() {
         console.log('🔍 Diagnóstico del Chat Widget:');
         console.log('- Webhook URL:', this.webhookUrl);
         console.log('- Session ID:', this.sessionId);
         console.log('- Chat abierto:', this.isOpen);
         console.log('- Escribiendo:', this.isTyping);
+        console.log('- Inicializado:', this.isInitialized);
         console.log('- Mensajes en historial:', this.messageHistory.length);
         console.log('- Elementos DOM:', {
             chatWidget: !!this.chatWidget,
@@ -435,51 +566,94 @@ class LegalChatWidget {
             chatWindow: !!this.chatWindow,
             chatMessages: !!this.chatMessages,
             chatInput: !!this.chatInput,
-            chatSend: !!this.chatSend
+            chatSend: !!this.chatSend,
+            chatOverlay: !!this.chatOverlay
         });
+        console.log('- Z-index del widget:', this.chatWidget ? getComputedStyle(this.chatWidget).zIndex : 'N/A');
     }
 }
 
-// Inicializar el chat cuando se carga la página
+// ✅ INICIALIZAR EL CHAT DE FORMA SEGURA
 let legalChat;
 
-// Función de inicialización global
 function initializeLegalChat() {
-    legalChat = new LegalChatWidget();
+    // ✅ VERIFICAR SI YA EXISTE
+    if (window.legalChatInstance) {
+        console.warn('Chat ya inicializado');
+        return;
+    }
     
-    // Hacer disponible globalmente para debugging
-    window.legalChat = legalChat;
+    try {
+        legalChat = new LegalChatWidget();
+        window.legalChat = legalChat;
+        window.legalChatInstance = legalChat;
+        console.log('✅ Chat widget inicializado exitosamente');
+    } catch (error) {
+        console.error('❌ Error al inicializar chat widget:', error);
+    }
 }
 
-// Auto-inicializar
+// ✅ AUTO-INICIALIZAR UNA SOLA VEZ
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeLegalChat);
 } else {
-    initializeLegalChat();
+    // ✅ USAR SETTIMEOUT PARA EVITAR CONFLICTOS CON OTROS SCRIPTS
+    setTimeout(initializeLegalChat, 100);
 }
 
-// Funciones de utilidad globales
+// ✅ FUNCIONES DE UTILIDAD GLOBALES
 window.chatUtils = {
     // Abrir chat programáticamente
-    openChat: () => legalChat?.openChat(),
+    openChat: () => {
+        if (window.legalChatInstance) {
+            window.legalChatInstance.openChat();
+        } else {
+            console.warn('Chat no inicializado');
+        }
+    },
     
     // Cerrar chat programáticamente
-    closeChat: () => legalChat?.closeChat(),
+    closeChat: () => {
+        if (window.legalChatInstance) {
+            window.legalChatInstance.closeChat();
+        }
+    },
     
     // Enviar mensaje programáticamente
-    sendMessage: (message) => legalChat?.sendProgrammaticMessage(message),
+    sendMessage: (message) => {
+        if (window.legalChatInstance) {
+            window.legalChatInstance.sendProgrammaticMessage(message);
+        }
+    },
     
     // Limpiar chat
-    clearChat: () => legalChat?.clearChat(),
+    clearChat: () => {
+        if (window.legalChatInstance) {
+            window.legalChatInstance.clearChat();
+        }
+    },
     
     // Obtener historial
-    getHistory: () => legalChat?.getMessageHistory() || [],
+    getHistory: () => {
+        return window.legalChatInstance ? window.legalChatInstance.getMessageHistory() : [];
+    },
     
     // Diagnóstico
-    diagnose: () => legalChat?.diagnose()
+    diagnose: () => {
+        if (window.legalChatInstance) {
+            window.legalChatInstance.diagnose();
+        } else {
+            console.warn('Chat no inicializado para diagnóstico');
+        }
+    },
+
+    // ✅ VERIFICAR ESTADO
+    isReady: () => {
+        return !!(window.legalChatInstance && window.legalChatInstance.isInitialized);
+    }
 };
 
-// Export para uso en otros módulos si es necesario
+// ✅ EXPORT PARA USO EN OTROS MÓDULOS
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = LegalChatWidget;
 }

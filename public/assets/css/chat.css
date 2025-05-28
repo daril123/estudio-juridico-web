@@ -1,56 +1,17 @@
 /* ===========================
-   CHAT WIDGET JURÍDICO - ESTILOS
+   CORRECCIONES CHAT WIDGET - PROBLEMAS DE FLUJO
    =========================== */
 
+/* 1. CORREGIR Z-INDEX HIERARCHY */
 .chat-widget {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1500;
+    z-index: 9999; /* Aumentar z-index para estar sobre todo */
     font-family: var(--font-primary, 'Inter', sans-serif);
 }
 
-/* ===========================
-   BOTÓN FLOTANTE DEL CHAT
-   =========================== */
-.chat-toggle {
-    position: relative;
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6b 100%);
-    border-radius: 50%;
-    box-shadow: 0 8px 25px rgba(30, 58, 95, 0.3);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    overflow: visible;
-}
-
-.chat-toggle:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 12px 35px rgba(30, 58, 95, 0.4);
-    background: linear-gradient(135deg, #2d4a6b 0%, #1e3a5f 100%);
-}
-
-.chat-toggle.active {
-    background: linear-gradient(135deg, #c8a876 0%, #b39660 100%);
-}
-
-.chat-icon,
-.chat-close-icon {
-    color: white;
-    font-size: 24px;
-    transition: all 0.3s ease;
-}
-
-.chat-close-icon {
-    position: absolute;
-}
-
-/* Notificación del chat */
+/* 2. CORREGIR NOTIFICACIÓN QUE CAUSA OVERFLOW */
 .chat-notification {
     position: absolute;
     bottom: 80px;
@@ -66,40 +27,26 @@
     max-width: 200px;
     opacity: 0;
     transform: translateY(10px) scale(0.8);
-    animation: chatNotificationShow 0.5s ease forwards,
-               chatNotificationHide 0.5s ease 4s forwards;
     border: 1px solid rgba(30, 58, 95, 0.1);
+    /* NUEVAS REGLAS PARA PREVENIR OVERFLOW */
+    pointer-events: none;
+    user-select: none;
+    will-change: transform, opacity;
+    contain: layout style paint;
 }
 
-.chat-notification::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    right: 20px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 8px solid white;
+/* 3. PREVENIR QUE EL CHAT AFECTE EL LAYOUT DEL BODY */
+body.chat-open {
+    overflow: auto !important; /* Nunca bloquear scroll del body */
 }
 
-@keyframes chatNotificationShow {
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+/* 4. ASEGURAR QUE EL FOOTER NO INTERFIERA */
+.footer {
+    position: relative;
+    z-index: 1; /* Menor que el chat */
 }
 
-@keyframes chatNotificationHide {
-    to {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.8);
-    }
-}
-
-/* ===========================
-   VENTANA DEL CHAT
-   =========================== */
+/* 5. CORREGIR VENTANA DE CHAT PARA EVITAR CONFLICTOS */
 .chat-window {
     position: absolute;
     bottom: 80px;
@@ -114,429 +61,18 @@
     overflow: hidden;
     border: 1px solid rgba(30, 58, 95, 0.1);
     backdrop-filter: blur(20px);
-    animation: chatWindowShow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* NUEVAS REGLAS */
+    contain: layout style paint;
+    will-change: transform, opacity;
+    transform-origin: bottom right;
 }
 
-.chat-window.active {
-    display: flex;
-}
-
-@keyframes chatWindowShow {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* Header del chat */
-.chat-header {
-    background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6b 100%);
-    color: white;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-}
-
-.chat-avatar {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-}
-
-.chat-avatar i {
-    font-size: 18px;
-    color: #c8a876;
-}
-
-.chat-info {
-    flex: 1;
-}
-
-.chat-info h4 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.chat-status {
-    font-size: 12px;
-    opacity: 0.9;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    background: #4ade80;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-.chat-minimize {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    opacity: 0.7;
-}
-
-.chat-minimize:hover {
-    background: rgba(255, 255, 255, 0.1);
-    opacity: 1;
-}
-
-/* ===========================
-   MENSAJES DEL CHAT
-   =========================== */
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    background: #f8fafc;
-    scroll-behavior: smooth;
-}
-
-.chat-messages::-webkit-scrollbar {
-    width: 4px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-    background: rgba(30, 58, 95, 0.2);
-    border-radius: 2px;
-}
-
-.message {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    animation: messageSlideIn 0.3s ease;
-}
-
-@keyframes messageSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.user-message {
-    flex-direction: row-reverse;
-}
-
-.message-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 4px;
-}
-
-.bot-message .message-avatar {
-    background: linear-gradient(135deg, #1e3a5f, #2d4a6b);
-    color: #c8a876;
-}
-
-.user-message .message-avatar {
-    background: linear-gradient(135deg, #c8a876, #b39660);
-    color: white;
-}
-
-.message-avatar i {
-    font-size: 14px;
-}
-
-.message-content {
-    max-width: 280px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.message-bubble {
-    padding: 12px 16px;
-    border-radius: 16px;
-    font-size: 14px;
-    line-height: 1.5;
-    word-wrap: break-word;
-    position: relative;
-}
-
-.bot-message .message-bubble {
-    background: white;
-    color: #374151;
-    border: 1px solid rgba(30, 58, 95, 0.1);
-    border-bottom-left-radius: 6px;
-}
-
-.user-message .message-bubble {
-    background: linear-gradient(135deg, #1e3a5f, #2d4a6b);
-    color: white;
-    border-bottom-right-radius: 6px;
-}
-
-.message-time {
-    font-size: 11px;
-    color: #9ca3af;
-    margin-left: 12px;
-}
-
-.user-message .message-time {
-    text-align: right;
-    margin-left: 0;
-    margin-right: 12px;
-}
-
-/* ===========================
-   INDICADOR DE ESCRITURA
-   =========================== */
-.typing-indicator {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 0 20px;
-    animation: messageSlideIn 0.3s ease;
-}
-
-.typing-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1e3a5f, #2d4a6b);
-    color: #c8a876;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 4px;
-}
-
-.typing-avatar i {
-    font-size: 14px;
-}
-
-.typing-bubble {
-    background: white;
-    border: 1px solid rgba(30, 58, 95, 0.1);
-    border-radius: 16px;
-    border-bottom-left-radius: 6px;
-    padding: 12px 16px;
-    max-width: 60px;
-}
-
-.typing-dots {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-}
-
-.typing-dots span {
-    width: 6px;
-    height: 6px;
-    background: #9ca3af;
-    border-radius: 50%;
-    animation: typingAnimation 1.5s infinite;
-}
-
-.typing-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes typingAnimation {
-    0%, 60%, 100% {
-        transform: translateY(0);
-        opacity: 0.5;
-    }
-    30% {
-        transform: translateY(-8px);
-        opacity: 1;
-    }
-}
-
-/* ===========================
-   INPUT DEL CHAT
-   =========================== */
-.chat-input-container {
-    background: white;
-    border-top: 1px solid rgba(30, 58, 95, 0.1);
-    padding: 16px 20px 12px;
-}
-
-.chat-input-wrapper {
-    display: flex;
-    gap: 12px;
-    align-items: flex-end;
-    background: #f8fafc;
-    border: 2px solid rgba(30, 58, 95, 0.1);
-    border-radius: 12px;
-    padding: 8px 12px;
-    transition: all 0.3s ease;
-}
-
-.chat-input-wrapper:focus-within {
-    border-color: #c8a876;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(200, 168, 118, 0.1);
-}
-
-.chat-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 14px;
-    font-family: inherit;
-    resize: none;
-    max-height: 100px;
-    min-height: 20px;
-    line-height: 1.5;
-    color: #374151;
-}
-
-.chat-input::placeholder {
-    color: #9ca3af;
-}
-
-.chat-send {
-    background: linear-gradient(135deg, #1e3a5f, #2d4a6b);
-    border: none;
-    color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    font-size: 14px;
-}
-
-.chat-send:hover:not(:disabled) {
-    background: linear-gradient(135deg, #c8a876, #b39660);
-    transform: scale(1.05);
-}
-
-.chat-send:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: #9ca3af;
-}
-
-/* ===========================
-   SUGERENCIAS
-   =========================== */
-.chat-suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.suggestion-btn {
-    background: rgba(30, 58, 95, 0.05);
-    border: 1px solid rgba(30, 58, 95, 0.1);
-    color: #1e3a5f;
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.suggestion-btn:hover {
-    background: rgba(30, 58, 95, 0.1);
-    border-color: #c8a876;
-    color: #1e3a5f;
-    transform: translateY(-1px);
-}
-
-.chat-footer {
-    text-align: center;
-    margin-top: 8px;
-    opacity: 0.6;
-}
-
-.chat-footer small {
-    font-size: 10px;
-    color: #9ca3af;
-}
-
-/* ===========================
-   OVERLAY PARA MÓVILES
-   =========================== */
-.chat-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1400;
-    backdrop-filter: blur(5px);
-}
-
-.chat-overlay.active {
-    display: block;
-}
-
-/* ===========================
-   RESPONSIVE DESIGN
-   =========================== */
+/* 6. MEJORAR RESPONSIVE PARA EVITAR PROBLEMAS EN MÓVILES */
 @media screen and (max-width: 480px) {
     .chat-widget {
         bottom: 15px;
         right: 15px;
-    }
-
-    .chat-toggle {
-        width: 56px;
-        height: 56px;
-    }
-
-    .chat-toggle .chat-icon,
-    .chat-toggle .chat-close-icon {
-        font-size: 20px;
+        left: 15px; /* Añadir left para mejor control */
     }
 
     .chat-window {
@@ -548,104 +84,138 @@
         width: 100%;
         height: 100%;
         border-radius: 0;
-        z-index: 1450;
+        z-index: 9999;
+        /* PREVENIR PROBLEMAS DE VIEWPORT */
+        max-height: 100vh;
+        max-width: 100vw;
     }
 
     .chat-notification {
         bottom: 70px;
-        right: -10px;
-        max-width: 180px;
+        right: 0;
+        left: 15px;
+        max-width: calc(100vw - 90px);
         font-size: 13px;
     }
+}
 
-    .chat-messages {
-        padding: 16px;
+/* 7. CORREGIR OVERLAY PARA MÓVILES */
+.chat-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998; /* Un nivel menos que el chat */
+    backdrop-filter: blur(5px);
+    /* NUEVAS REGLAS */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.chat-overlay.active {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 8. PREVENIR CONFLICTOS CON SCROLL DEL BODY */
+html.chat-active,
+body.chat-active {
+    overflow: auto !important;
+    position: static !important;
+}
+
+/* 9. ASEGURAR QUE NO HAY ELEMENTOS DUPLICADOS */
+.chat-widget * {
+    pointer-events: auto;
+}
+
+.chat-widget .hidden {
+    display: none !important;
+}
+
+/* 10. CORREGIR ANIMACIONES QUE PUEDEN CAUSAR PROBLEMAS */
+@keyframes chatNotificationShow {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.8);
     }
-
-    .message-content {
-        max-width: calc(100vw - 100px);
-    }
-
-    .chat-input-container {
-        padding: 12px 16px;
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
-@media screen and (max-width: 380px) {
-    .chat-suggestions {
-        display: none;
+@keyframes chatNotificationHide {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
-    
-    .suggestion-btn {
-        font-size: 11px;
-        padding: 4px 8px;
-    }
-}
-
-/* Estados especiales */
-.chat-widget.minimized .chat-window {
-    animation: chatWindowHide 0.3s ease forwards;
-}
-
-@keyframes chatWindowHide {
     to {
         opacity: 0;
-        transform: translateY(20px) scale(0.9);
+        transform: translateY(-10px) scale(0.8);
+        visibility: hidden; /* Asegurar que desaparezca completamente */
     }
 }
 
-/* Modo oscuro */
-@media (prefers-color-scheme: dark) {
-    .chat-window {
-        background: #1f2937;
-        border-color: #374151;
-    }
+/* 11. RESET ESPECÍFICO PARA EL CHAT WIDGET */
+.chat-widget,
+.chat-widget * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    .chat-messages {
-        background: #111827;
-    }
+/* 12. PREVENIR INTERFERENCIA CON OTROS ELEMENTOS FIXED */
+.chat-widget {
+    isolation: isolate; /* Crear nuevo stacking context */
+}
 
-    .bot-message .message-bubble {
-        background: #374151;
-        color: #f3f4f6;
-        border-color: #4b5563;
-    }
+/* 13. DEBUGGING - TEMPORAL (REMOVER EN PRODUCCIÓN) */
+.chat-widget.debug {
+    outline: 2px solid red;
+}
 
-    .chat-input-container {
-        background: #1f2937;
-        border-color: #374151;
-    }
+.chat-widget.debug * {
+    outline: 1px solid blue;
+}
 
-    .chat-input-wrapper {
-        background: #111827;
-        border-color: #374151;
-    }
+/* 14. CORREGIR CONTENEDOR DE MENSAJES PARA EVITAR OVERFLOW */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden; /* Prevenir scroll horizontal */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #f8fafc;
+    scroll-behavior: smooth;
+    /* NUEVAS REGLAS */
+    contain: strict;
+    overscroll-behavior: contain;
+}
 
-    .chat-input-wrapper:focus-within {
-        background: #1f2937;
-    }
-
-    .chat-input {
-        color: #f3f4f6;
-    }
-
-    .chat-input::placeholder {
-        color: #6b7280;
-    }
-
-    .suggestion-btn {
-        background: rgba(55, 65, 81, 0.5);
-        border-color: #4b5563;
-        color: #f3f4f6;
-    }
-
-    .suggestion-btn:hover {
-        background: rgba(55, 65, 81, 0.8);
-    }
-
-    .chat-notification {
-        background: #374151;
-        color: #f3f4f6;
-        border-color: #4b5563;
-    }
+/* 15. ASEGURAR QUE EL TOGGLE NO CAUSE PROBLEMAS */
+.chat-toggle {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6b 100%);
+    border-radius: 50%;
+    box-shadow: 0 8px 25px rgba(30, 58, 95, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    overflow: visible;
+    /* NUEVAS REGLAS */
+    contain: layout style;
+    transform: translateZ(0); /* Forzar compositing layer */
 }

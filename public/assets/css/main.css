@@ -1250,3 +1250,75 @@ p {
     outline: 2px solid var(--secondary-color);
     outline-offset: 2px;
 }
+
+/* ✅ ASEGURAR QUE EL FOOTER NO INTERFIERA CON EL CHAT */
+.footer {
+    position: relative;
+    z-index: 1; /* ✅ MENOR QUE EL CHAT (9999) */
+}
+
+/* ✅ PREVENIR CONFLICTOS CON CHAT WIDGET */
+body.chat-open,
+body.chat-active {
+    overflow: auto !important;
+}
+
+html.chat-active,
+body.chat-active {
+    overflow: auto !important;
+    position: static !important;
+}
+
+/* ✅ ASEGURAR QUE LOS MODALES NO INTERFIERAN CON EL CHAT */
+.modal {
+    z-index: 2000; /* ✅ MENOR QUE EL CHAT (9999) */
+}
+
+/* ✅ AJUSTES PARA NAVEGACIÓN MÓVIL Y CHAT */
+.nav-menu.active {
+    z-index: 999; /* ✅ MENOR QUE EL CHAT */
+}
+
+/* ✅ PREVENIR QUE EL HEADER INTERFIERA */
+.header {
+    z-index: 1000; /* ✅ MENOR QUE EL CHAT */
+}
+
+/* ✅ MEJORAS DE ACCESIBILIDAD PARA NAVEGACIÓN POR TECLADO */
+.keyboard-navigation .chat-widget:focus-within {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 3px;
+}
+
+/* ✅ OPTIMIZACIONES PARA DISPOSITIVOS TÁCTILES */
+@media (hover: none) and (pointer: coarse) {
+    .chat-widget {
+        /* Asegurar área de toque adecuada en móviles */
+        min-width: 56px;
+        min-height: 56px;
+    }
+}
+
+/* ✅ CONFIGURACIÓN PARA DISPOSITIVOS CON NOTCH (iPhone X+) */
+@supports (padding: max(0px)) {
+    .chat-widget {
+        bottom: max(env(safe-area-inset-bottom), 20px);
+        right: max(env(safe-area-inset-right), 20px);
+    }
+}
+
+/* ✅ MODO ALTO CONTRASTE PARA CHAT */
+@media (prefers-contrast: high) {
+    .chat-widget {
+        filter: contrast(1.2);
+    }
+}
+
+/* ✅ PREFERS REDUCED MOTION PARA CHAT */
+@media (prefers-reduced-motion: reduce) {
+    .chat-widget * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

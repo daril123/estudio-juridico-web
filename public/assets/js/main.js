@@ -600,7 +600,7 @@ class LawFirmApp {
     // EVENT LISTENERS
     // ========================
     bindEvents() {
-        // Manejar cambios de orientación
+    // Manejar cambios de orientación
         window.addEventListener('orientationchange', () => {
             setTimeout(() => {
                 this.updateActiveNavLink();
@@ -612,11 +612,41 @@ class LawFirmApp {
             document.body.classList.add('touch-device');
         }
 
-        // Manejar teclas de accesibilidad
+        // ✅ MANEJAR TECLAS DE ACCESIBILIDAD - MEJORADO
         document.addEventListener('keydown', (e) => {
             // Navegación con Tab mejorada
             if (e.key === 'Tab') {
                 document.body.classList.add('keyboard-navigation');
+            }
+            
+            // ✅ NO INTERFERIR CON EL CHAT CUANDO ESTÁ ABIERTO
+            if (window.legalChatInstance && window.legalChatInstance.isOpen) {
+                // Permitir que el chat maneje sus propias teclas
+                return;
+            }
+        });
+
+        // ✅ CLICKS MEJORADOS - PREVENIR CONFLICTOS CON CHAT
+        document.addEventListener('click', (e) => {
+            // ✅ NO CERRAR MENÚS SI SE HACE CLICK EN EL CHAT
+            if (e.target.closest('.chat-widget')) {
+                return;
+            }
+            
+            // No cerrar menús si el chat está abierto y se hace click en él
+            if (window.legalChatInstance && window.legalChatInstance.isOpen && 
+                e.target.closest('#chat-window, #chat-toggle')) {
+                return;
+            }
+            
+            // Cerrar menú móvil al hacer click fuera
+            const navToggle = document.getElementById('nav-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            
+            if (navToggle && navMenu && 
+                !navToggle.contains(e.target) && 
+                !navMenu.contains(e.target)) {
+                this.closeMobileMenu();
             }
         });
 
@@ -624,11 +654,117 @@ class LawFirmApp {
             document.body.classList.remove('keyboard-navigation');
         });
 
-        // Performance monitoring
+        // ✅ PERFORMANCE MONITORING MEJORADO
         window.addEventListener('load', () => {
             const loadTime = performance.now();
             console.log(`⚡ Página cargada en ${Math.round(loadTime)}ms`);
+            
+            // ✅ VERIFICAR QUE EL CHAT SE INICIALIZÓ CORRECTAMENTE
+            setTimeout(() => {
+                if (window.chatUtils && window.chatUtils.isReady()) {
+                    console.log('✅ Chat widget ready');
+                } else {
+                    console.warn('⚠️ Chat widget no se inicializó correctamente');
+                }
+            }, 1000);
         });
+
+        // ✅ MANEJAR RESIZE PARA CHAT Y RESPONSIVE
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Actualizar navegación activa
+                this.updateActiveNavLink();
+                
+                // ✅ NOTIFICAR AL CHAT SOBRE CAMBIO DE VIEWPORT
+                if (window.legalChatInstance) {
+                    // Cerrar chat en cambio a móvil si está abierto
+                    if (window.innerWidth <= 480 && window.legalChatInstance.isOpen) {
+                        // El chat se ajustará automáticamente
+                    }
+                }
+            }, 250);
+        });
+
+        // ✅ MANEJAR ERRORES GLOBALES QUE PUEDAN AFECTAR EL CHAT
+        window.addEventListener('error', (e) => {
+            console.error('Error global:', e.error);
+            
+            // Si el error está relacionado con el chat, intentar recuperación
+            if (e.error && e.error.message && 
+                e.error.message.includes('chat')) {
+                console.warn('Error relacionado con chat detectado, intentando recuperación...');
+                
+                // Intentar reinicializar chat después de un breve delay
+                setTimeout(() => {
+                    if (!window.legalChatInstance) {
+                        console.log('Intentando reinicializar chat...');
+                        if (typeof initializeLegalChat === 'function') {
+                            initializeLegalChat();
+                        }
+                    }
+                }, 2000);
+            }
+        });
+
+        // ✅ MANEJAR VISIBILIDAD DE LA PÁGINA (PARA PAUSAR/REANUDAR CHAT)
+        document.addEventListener('visibilitychange', () => {
+            if (window.legalChatInstance) {
+                if (document.hidden) {
+                    // Página oculta - pausar actividades del chat si es necesario
+                    console.log('Página oculta - pausando chat');
+                } else {
+                    // Página visible - reanudar actividades del chat
+                    console.log('Página visible - reanudando chat');
+                }
+            }
+        });
+    }
+
+    // ✅ MÉTODO ADICIONAL PARA COMPATIBILIDAD CON CHAT
+    // Agregar este método al final de la clase LawFirmApp
+
+    /**
+     * Método para verificar compatibilidad con chat widget
+     */
+    checkChatCompatibility() {
+        const issues = [];
+        
+        // Verificar z-index conflicts
+        const footer = document.querySelector('.footer');
+        if (footer) {
+            const footerZIndex = parseInt(getComputedStyle(footer).zIndex) || 0;
+            if (footerZIndex >= 9999) {
+                issues.push('Footer z-index muy alto, puede interferir con chat');
+            }
+        }
+        
+        // Verificar modal conflicts
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            const modalZIndex = parseInt(getComputedStyle(modal).zIndex) || 0;
+            if (modalZIndex >= 9999) {
+                issues.push('Modal z-index muy alto, puede interferir con chat');
+            }
+        });
+        
+        // Verificar header conflicts
+        const header = document.querySelector('.header');
+        if (header) {
+            const headerZIndex = parseInt(getComputedStyle(header).zIndex) || 0;
+            if (headerZIndex >= 9999) {
+                issues.push('Header z-index muy alto, puede interferir con chat');
+            }
+        }
+        
+        if (issues.length > 0) {
+            console.warn('⚠️ Problemas de compatibilidad con chat detectados:', issues);
+        } else {
+            console.log('✅ No hay conflictos de compatibilidad con chat');
+        }
+        
+        return issues;
     }
 }
 
