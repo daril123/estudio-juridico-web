@@ -1,42 +1,42 @@
 /* ===========================
-   ESTUDIO JURÍDICO - CSS PRINCIPAL MEJORADO
+   TIJATIJA-JURIDICO - CSS PRINCIPAL SOBRIO Y PROFESIONAL
    =========================== */
 
-/* Reset y Variables Mejoradas */
+/* Reset y Variables Mejoradas con Tono Sobrio */
 :root {
-    /* Colores principales más elegantes */
-    --primary-color: #1e3a5f;
-    --primary-light: #2d4a6b;
-    --primary-dark: #152e47;
-    --secondary-color: #c8a876;
-    --secondary-light: #d4b685;
-    --secondary-dark: #b39660;
-    --accent-color: #c8a876;
-    --accent-hover: #b39660;
+    /* Colores principales más sobrios y profesionales */
+    --primary-color: #1a365d;
+    --primary-light: #2c5282;
+    --primary-dark: #153154;
+    --secondary-color: #744210;
+    --secondary-light: #975a16;
+    --secondary-dark: #5a340d;
+    --accent-color: #744210;
+    --accent-hover: #5a340d;
     
     /* Colores de texto mejorados */
     --text-primary: #1a202c;
-    --text-secondary: #4a5568;
-    --text-muted: #718096;
-    --text-light: #a0aec0;
+    --text-secondary: #2d3748;
+    --text-muted: #4a5568;
+    --text-light: #718096;
     
     /* Backgrounds más sofisticados */
     --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
+    --bg-secondary: #f7fafc;
     --bg-tertiary: #edf2f7;
     --bg-dark: #1a202c;
     
     /* Efectos y sombras */
     --border-color: #e2e8f0;
-    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 1px 3px 0 rgba(26, 54, 93, 0.1), 0 1px 2px 0 rgba(26, 54, 93, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(26, 54, 93, 0.1), 0 2px 4px -1px rgba(26, 54, 93, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(26, 54, 93, 0.1), 0 4px 6px -2px rgba(26, 54, 93, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(26, 54, 93, 0.1), 0 10px 10px -5px rgba(26, 54, 93, 0.04);
     
-    /* Gradientes elegantes */
+    /* Gradientes elegantes y sobrios */
     --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
     --gradient-secondary: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
-    --gradient-hero: linear-gradient(135deg, #f8fafc 0%, #edf2f7 50%, #e2e8f0 100%);
+    --gradient-hero: linear-gradient(135deg, #f7fafc 0%, #edf2f7 50%, #e2e8f0 100%);
     
     /* Tipografía escalable */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -66,8 +66,8 @@
     --transition-base: all 0.3s ease;
     --transition-slow: all 0.5s ease;
     --border-radius-sm: 6px;
-    --border-radius: 10px;
-    --border-radius-lg: 16px;
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
     --max-width: 1200px;
 }
 
@@ -88,6 +88,7 @@ body {
     color: var(--text-primary);
     overflow-x: hidden;
     background: var(--bg-primary);
+    font-weight: 400;
 }
 
 /* Contenedores */
@@ -97,7 +98,7 @@ body {
     padding: 0 var(--space-md);
 }
 
-/* Typography Mejorada */
+/* Typography Mejorada y Sobria */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 600;
@@ -118,6 +119,7 @@ p {
     line-height: 1.7;
     color: var(--text-secondary);
     margin-bottom: var(--space-sm);
+    font-weight: 400;
 }
 
 .section-title {
@@ -132,8 +134,8 @@ p {
 .section-title::after {
     content: '';
     display: block;
-    width: 80px;
-    height: 4px;
+    width: 60px;
+    height: 3px;
     background: var(--gradient-secondary);
     margin: var(--space-sm) auto;
     border-radius: 2px;
@@ -148,18 +150,19 @@ p {
     margin-left: auto;
     margin-right: auto;
     line-height: 1.6;
+    font-weight: 400;
 }
 
 .section-header {
     margin-bottom: var(--space-2xl);
 }
 
-/* Buttons Mejorados */
+/* Buttons Mejorados y Sobrios */
 .btn {
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-sm) var(--space-lg);
     border: none;
     border-radius: var(--border-radius);
     font-weight: 600;
@@ -181,7 +184,7 @@ p {
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
 }
@@ -325,7 +328,7 @@ p {
 }
 
 /* ===========================
-   HERO SECTION MEJORADO
+   HERO SECTION MEJORADO Y SOBRIO
    =========================== */
 .hero {
     padding: calc(80px + var(--space-xl)) 0 var(--space-2xl);
@@ -342,10 +345,10 @@ p {
     position: absolute;
     top: 0;
     right: 0;
-    width: 60%;
+    width: 50%;
     height: 100%;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23f0f9ff" points="200,0 1000,200 1000,1000 0,800" opacity="0.1"/></svg>');
-    opacity: 0.3;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23f0f4f8" points="200,0 1000,200 1000,1000 0,800" opacity="0.1"/></svg>');
+    opacity: 0.2;
 }
 
 .hero-container {
@@ -398,6 +401,7 @@ p {
     margin-bottom: var(--space-lg);
     line-height: 1.7;
     max-width: 90%;
+    font-weight: 400;
 }
 
 .hero-buttons {
@@ -424,7 +428,7 @@ p {
 }
 
 .stat:hover {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
     box-shadow: var(--shadow-xl);
     border-color: var(--secondary-color);
 }
@@ -456,15 +460,15 @@ p {
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-xl);
     text-align: center;
-    transform: rotate(2deg);
+    transform: rotate(1deg);
     transition: var(--transition-slow);
     border: 1px solid var(--border-color);
     max-width: 320px;
 }
 
 .hero-card:hover {
-    transform: rotate(0deg) translateY(-15px);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: rotate(0deg) translateY(-8px);
+    box-shadow: 0 20px 40px -12px rgba(26, 54, 93, 0.25);
 }
 
 .hero-card i {
@@ -517,14 +521,14 @@ p {
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
+    height: 3px;
     background: var(--gradient-secondary);
     transform: scaleX(0);
     transition: var(--transition-base);
 }
 
 .service-card:hover {
-    transform: translateY(-12px);
+    transform: translateY(-8px);
     box-shadow: var(--shadow-xl);
     border-color: var(--secondary-color);
 }
@@ -555,20 +559,20 @@ p {
 
 .featured-badge {
     position: absolute;
-    top: -10px;
+    top: -8px;
     right: var(--space-md);
     background: var(--gradient-secondary);
     color: white;
     padding: var(--space-xs) var(--space-sm);
-    border-radius: 20px;
+    border-radius: 16px;
     font-size: var(--text-xs);
     font-weight: 600;
     box-shadow: var(--shadow-md);
 }
 
 .service-icon {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     background: var(--gradient-secondary);
     border-radius: 50%;
     display: flex;
@@ -585,7 +589,7 @@ p {
 }
 
 .service-card:hover .service-icon {
-    transform: scale(1.1);
+    transform: scale(1.05);
     box-shadow: var(--shadow-lg);
 }
 
@@ -651,6 +655,7 @@ p {
     color: var(--text-secondary);
     margin-bottom: var(--space-lg);
     line-height: 1.7;
+    font-weight: 400;
 }
 
 .about-features {
@@ -671,7 +676,7 @@ p {
 }
 
 .feature:hover {
-    transform: translateX(12px);
+    transform: translateX(8px);
     box-shadow: var(--shadow-lg);
     border-color: var(--secondary-color);
 }
@@ -758,14 +763,14 @@ p {
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
+    height: 3px;
     background: var(--gradient-secondary);
     transform: scaleX(0);
     transition: var(--transition-base);
 }
 
 .team-member:hover {
-    transform: translateY(-12px);
+    transform: translateY(-8px);
     box-shadow: var(--shadow-xl);
     border-color: var(--secondary-color);
 }
@@ -775,8 +780,8 @@ p {
 }
 
 .member-image {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     background: var(--gradient-primary);
     border-radius: 50%;
     margin: 0 auto var(--space-md);
@@ -789,7 +794,7 @@ p {
 }
 
 .member-image i {
-    font-size: var(--text-4xl);
+    font-size: var(--text-3xl);
     color: white;
 }
 
@@ -821,8 +826,8 @@ p {
 }
 
 .member-social a {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     background: var(--bg-secondary);
     border-radius: 50%;
     display: flex;
@@ -836,7 +841,7 @@ p {
 .member-social a:hover {
     background: var(--primary-color);
     color: white;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
@@ -874,7 +879,7 @@ p {
 }
 
 .contact-item:hover {
-    transform: translateX(12px);
+    transform: translateX(8px);
     box-shadow: var(--shadow-lg);
     border-color: var(--secondary-color);
 }
@@ -929,6 +934,7 @@ p {
     transition: var(--transition-base);
     background: var(--bg-primary);
     color: var(--text-primary);
+    font-weight: 400;
 }
 
 .form-group input:focus,
@@ -936,7 +942,7 @@ p {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--secondary-color);
-    box-shadow: 0 0 0 3px rgba(200, 168, 118, 0.1);
+    box-shadow: 0 0 0 3px rgba(116, 66, 16, 0.1);
     transform: translateY(-1px);
 }
 
@@ -1003,8 +1009,8 @@ p {
 }
 
 .social-links a {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
@@ -1017,7 +1023,7 @@ p {
 
 .social-links a:hover {
     background: var(--secondary-color);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
@@ -1038,7 +1044,7 @@ p {
 
 .footer-section ul li a:hover {
     color: var(--secondary-color);
-    transform: translateX(5px);
+    transform: translateX(3px);
     display: inline-block;
 }
 
@@ -1096,7 +1102,7 @@ p {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(30, 58, 95, 0.7);
+    background-color: rgba(26, 54, 93, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }

@@ -1,14 +1,19 @@
 /**
- * ESTUDIO JURÍDICO - JAVASCRIPT PRINCIPAL
- * Funcionalidades principales del sitio web
+ * TIJATIJA-JURIDICO - JAVASCRIPT PRINCIPAL
+ * Funcionalidades principales del sitio web para Andahuaylas, Apurímac
  */
 
-// Configuración global
+// Configuración global actualizada
 const CONFIG = {
     animationDuration: 300,
     scrollOffset: 80,
     typingSpeed: 50,
-    autoSlideInterval: 5000
+    autoSlideInterval: 5000,
+    firmName: 'TijaTija-Juridico',
+    location: 'Andahuaylas, Apurímac',
+    phone: '(083) 421-856',
+    mobile: '+51 965-478-923',
+    email: 'contacto@tijatija-juridico.com'
 };
 
 // Utilidades generales
@@ -52,15 +57,37 @@ const Utils = {
         return re.test(email);
     },
 
-    // Formatear teléfono
+    // Formatear teléfono peruano
     formatPhone(phone) {
-        return phone.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+        // Remover caracteres no numéricos
+        const numbers = phone.replace(/\D/g, '');
+        
+        // Formatear según el patrón peruano
+        if (numbers.length === 9 && numbers.startsWith('9')) {
+            // Celular: 987-654-321
+            return numbers.replace(/(\d{3})(\d{3})(\d{3})/, '$1-$2-$3');
+        } else if (numbers.length === 7) {
+            // Fijo provincial: 421-856
+            return numbers.replace(/(\d{3})(\d{4})/, '$1-$2');
+        } else if (numbers.length === 10 && numbers.startsWith('083')) {
+            // Con código de área: (083) 421-856
+            return numbers.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+        }
+        
+        return phone; // Retornar original si no coincide con patrones
     }
 };
 
 // Clase principal de la aplicación
-class LawFirmApp {
+class TijaTijaLawFirmApp {
     constructor() {
+        this.firmInfo = {
+            name: CONFIG.firmName,
+            location: CONFIG.location,
+            phone: CONFIG.phone,
+            mobile: CONFIG.mobile,
+            email: CONFIG.email
+        };
         this.init();
     }
 
@@ -84,7 +111,7 @@ class LawFirmApp {
         this.setupLazyLoading();
         this.bindEvents();
         
-        console.log('🏛️ LawFirm App initialized successfully');
+        console.log(`🏛️ ${this.firmInfo.name} App inicializado exitosamente para ${this.firmInfo.location}`);
     }
 
     // ========================
@@ -239,7 +266,7 @@ class LawFirmApp {
         if (showRegister) {
             showRegister.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.showNotification('Función de registro próximamente disponible', 'info');
+                this.showNotification('Portal de registro próximamente disponible. Contacta directamente con nuestro estudio.', 'info');
             });
         }
     }
@@ -366,18 +393,18 @@ class LawFirmApp {
             
             // Mostrar éxito
             this.showNotification(
-                '¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.',
+                `¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto desde nuestro estudio en ${this.firmInfo.location}.`,
                 'success'
             );
             
-            console.log('Formulario enviado:', data);
+            console.log(`📧 Formulario enviado desde ${this.firmInfo.name}:`, data);
         }, 2000);
     }
 
     simulateLogin(data) {
         // Aquí iría la lógica real de autenticación
-        this.showNotification('Función de login próximamente disponible', 'info');
-        console.log('Intento de login:', data);
+        this.showNotification(`Portal de clientes próximamente disponible. Para consultas inmediatas, contacta al ${this.firmInfo.phone}`, 'info');
+        console.log(`🔐 Intento de login en ${this.firmInfo.name}:`, data);
     }
 
     showFieldError(field, message) {
@@ -435,7 +462,7 @@ class LawFirmApp {
     setupCardAnimations() {
         document.querySelectorAll('.service-card, .team-member').forEach(card => {
             card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-10px) scale(1.02)';
+                card.style.transform = 'translateY(-8px) scale(1.02)';
                 card.style.transition = 'all 0.3s ease';
             });
 
@@ -482,7 +509,9 @@ class LawFirmApp {
     }
 
     animateCounter(element) {
-        const target = parseInt(element.textContent);
+        const originalText = element.textContent;
+        const target = parseInt(originalText);
+        const suffix = originalText.replace(/\d/g, ''); // Obtener + o %
         const duration = 2000;
         const stepTime = 50;
         const steps = duration / stepTime;
@@ -492,13 +521,10 @@ class LawFirmApp {
         const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
-                element.textContent = element.textContent.includes('+') ? target + '+' :
-                                   element.textContent.includes('%') ? target + '%' : target;
+                element.textContent = target + suffix;
                 clearInterval(timer);
             } else {
-                element.textContent = Math.floor(current) + 
-                    (element.textContent.includes('+') ? '+' :
-                     element.textContent.includes('%') ? '%' : '');
+                element.textContent = Math.floor(current) + suffix;
             }
         }, stepTime);
     }
@@ -550,7 +576,7 @@ class LawFirmApp {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.style.cssText = `
-            background: ${type === 'success' ? '#38a169' : type === 'error' ? '#e53e3e' : '#3182ce'};
+            background: ${type === 'success' ? '#1a365d' : type === 'error' ? '#e53e3e' : '#744210'};
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 8px;
@@ -600,7 +626,7 @@ class LawFirmApp {
     // EVENT LISTENERS
     // ========================
     bindEvents() {
-    // Manejar cambios de orientación
+        // Manejar cambios de orientación
         window.addEventListener('orientationchange', () => {
             setTimeout(() => {
                 this.updateActiveNavLink();
@@ -657,14 +683,14 @@ class LawFirmApp {
         // ✅ PERFORMANCE MONITORING MEJORADO
         window.addEventListener('load', () => {
             const loadTime = performance.now();
-            console.log(`⚡ Página cargada en ${Math.round(loadTime)}ms`);
+            console.log(`⚡ ${this.firmInfo.name} cargado en ${Math.round(loadTime)}ms`);
             
             // ✅ VERIFICAR QUE EL CHAT SE INICIALIZÓ CORRECTAMENTE
             setTimeout(() => {
                 if (window.chatUtils && window.chatUtils.isReady()) {
-                    console.log('✅ Chat widget ready');
+                    console.log(`✅ Chat widget ${this.firmInfo.name} ready`);
                 } else {
-                    console.warn('⚠️ Chat widget no se inicializó correctamente');
+                    console.warn(`⚠️ Chat widget ${this.firmInfo.name} no se inicializó correctamente`);
                 }
             }, 1000);
         });
@@ -689,17 +715,17 @@ class LawFirmApp {
 
         // ✅ MANEJAR ERRORES GLOBALES QUE PUEDAN AFECTAR EL CHAT
         window.addEventListener('error', (e) => {
-            console.error('Error global:', e.error);
+            console.error(`Error global en ${this.firmInfo.name}:`, e.error);
             
             // Si el error está relacionado con el chat, intentar recuperación
             if (e.error && e.error.message && 
                 e.error.message.includes('chat')) {
-                console.warn('Error relacionado con chat detectado, intentando recuperación...');
+                console.warn(`Error relacionado con chat ${this.firmInfo.name} detectado, intentando recuperación...`);
                 
                 // Intentar reinicializar chat después de un breve delay
                 setTimeout(() => {
                     if (!window.legalChatInstance) {
-                        console.log('Intentando reinicializar chat...');
+                        console.log(`Intentando reinicializar chat ${this.firmInfo.name}...`);
                         if (typeof initializeLegalChat === 'function') {
                             initializeLegalChat();
                         }
@@ -713,21 +739,16 @@ class LawFirmApp {
             if (window.legalChatInstance) {
                 if (document.hidden) {
                     // Página oculta - pausar actividades del chat si es necesario
-                    console.log('Página oculta - pausando chat');
+                    console.log(`Página ${this.firmInfo.name} oculta - pausando chat`);
                 } else {
                     // Página visible - reanudar actividades del chat
-                    console.log('Página visible - reanudando chat');
+                    console.log(`Página ${this.firmInfo.name} visible - reanudando chat`);
                 }
             }
         });
     }
 
     // ✅ MÉTODO ADICIONAL PARA COMPATIBILIDAD CON CHAT
-    // Agregar este método al final de la clase LawFirmApp
-
-    /**
-     * Método para verificar compatibilidad con chat widget
-     */
     checkChatCompatibility() {
         const issues = [];
         
@@ -759,12 +780,30 @@ class LawFirmApp {
         }
         
         if (issues.length > 0) {
-            console.warn('⚠️ Problemas de compatibilidad con chat detectados:', issues);
+            console.warn(`⚠️ Problemas de compatibilidad con chat ${this.firmInfo.name} detectados:`, issues);
         } else {
-            console.log('✅ No hay conflictos de compatibilidad con chat');
+            console.log(`✅ No hay conflictos de compatibilidad con chat ${this.firmInfo.name}`);
         }
         
         return issues;
+    }
+
+    // Método para obtener información de la empresa
+    getFirmInfo() {
+        return this.firmInfo;
+    }
+
+    // Método para mostrar información de contacto rápido
+    showQuickContact() {
+        const contactInfo = `
+            📍 ${this.firmInfo.name}
+            📞 ${this.firmInfo.phone}
+            📱 ${this.firmInfo.mobile}
+            ✉️ ${this.firmInfo.email}
+            🏛️ ${this.firmInfo.location}
+        `;
+        
+        this.showNotification(contactInfo, 'info');
     }
 }
 
@@ -773,12 +812,21 @@ class LawFirmApp {
 // ========================
 
 // Inicializar la aplicación
-const app = new LawFirmApp();
+const app = new TijaTijaLawFirmApp();
 
 // Funciones globales para compatibilidad
-window.lawFirmApp = app;
+window.tijaTijaApp = app;
+window.lawFirmApp = app; // Mantener compatibilidad
+
+// Funciones de utilidad adicionales
+window.tijaTijaUtils = {
+    showContact: () => app.showQuickContact(),
+    getFirmInfo: () => app.getFirmInfo(),
+    formatPhone: Utils.formatPhone,
+    validateEmail: Utils.validateEmail
+};
 
 // Exportar para uso en otros scripts si es necesario
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = LawFirmApp;
+    module.exports = TijaTijaLawFirmApp;
 }

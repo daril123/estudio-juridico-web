@@ -1,12 +1,22 @@
 /**
- * CHAT WIDGET JURÍDICO - COMPATIBLE CON N8N
- * Maneja específicamente las respuestas de n8n webhook
+ * CHAT WIDGET JURÍDICO TIJATIJA-JURIDICO - COMPATIBLE CON N8N
+ * Versión actualizada para Andahuaylas, Apurímac
  */
 
 class LegalChatWidget {
     constructor() {
         // Configuración de la webhook
         this.webhookUrl = 'https://singular-dear-jaybird.ngrok-free.app/webhook/cfa4d4c3-0f1c-49bc-b1f9-4d5c4b719b44';
+        
+        // Información del estudio actualizada
+        this.firmInfo = {
+            name: 'TijaTija-Juridico',
+            location: 'Andahuaylas, Apurímac',
+            phone: '(083) 421-856',
+            mobile: '+51 965-478-923',
+            email: 'contacto@tijatija-juridico.com',
+            address: 'Jr. Lima 245, Plaza de Armas, Andahuaylas, Apurímac 03701'
+        };
         
         // Estado del chat
         this.isOpen = false;
@@ -30,7 +40,7 @@ class LegalChatWidget {
 
     init() {
         if (this.isInitialized) {
-            console.warn('Chat widget ya está inicializado');
+            console.warn('Chat widget TijaTija-Juridico ya está inicializado');
             return;
         }
 
@@ -43,7 +53,7 @@ class LegalChatWidget {
 
     setupChat() {
         if (window.legalChatInstance) {
-            console.warn('Ya existe una instancia del chat');
+            console.warn('Ya existe una instancia del chat TijaTija-Juridico');
             return;
         }
 
@@ -51,7 +61,7 @@ class LegalChatWidget {
         this.initializeElements();
         
         if (!this.validateElements()) {
-            console.error('No se pudieron inicializar todos los elementos del chat');
+            console.error('No se pudieron inicializar todos los elementos del chat TijaTija-Juridico');
             return;
         }
         
@@ -61,7 +71,7 @@ class LegalChatWidget {
         
         window.legalChatInstance = this;
         
-        console.log('🤖 Chat Widget Jurídico inicializado correctamente');
+        console.log('🏛️ Chat Widget TijaTija-Juridico (Andahuaylas) inicializado correctamente');
     }
 
     cleanupExistingChat() {
@@ -100,7 +110,7 @@ class LegalChatWidget {
         const missingElements = requiredElements.filter(element => !this[element]);
         
         if (missingElements.length > 0) {
-            console.error('Elementos faltantes:', missingElements);
+            console.error('Elementos faltantes en TijaTija-Juridico chat:', missingElements);
             return false;
         }
         
@@ -181,13 +191,13 @@ class LegalChatWidget {
     }
 
     generateSessionId() {
-        return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        return 'tijatija_chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
 
     setupNotificationSystem() {
         setTimeout(() => {
             this.showWelcomeNotification();
-        }, 2000);
+        }, 3000);
     }
 
     showWelcomeNotification() {
@@ -213,7 +223,7 @@ class LegalChatWidget {
                         }
                     }, 500);
                 }
-            }, 5000);
+            }, 6000);
         }
     }
 
@@ -259,6 +269,9 @@ class LegalChatWidget {
         }, 300);
 
         this.scrollToBottom();
+        
+        // Registrar apertura del chat
+        console.log('📱 Chat TijaTija-Juridico abierto en:', this.firmInfo.location);
     }
 
     closeChat() {
@@ -301,26 +314,51 @@ class LegalChatWidget {
             
             this.hideTypingIndicator();
             
-            // 🔥 MANEJO ESPECÍFICO PARA N8N
+            // Manejo específico para respuestas de TijaTija-Juridico
             let botReply = this.extractMessageFromN8nResponse(response);
             
             if (botReply) {
+                // Personalizar respuesta con información del estudio
+                botReply = this.personalizeResponse(botReply);
                 this.addMessage(botReply, 'bot');
             } else {
                 console.log('No se pudo extraer mensaje de la respuesta:', response);
-                this.addMessage('Lo siento, no pude procesar tu consulta en este momento. Por favor, intenta nuevamente o contacta directamente con nuestro equipo.', 'bot');
+                this.addMessage(
+                    `Disculpa, no pude procesar tu consulta en este momento. Por favor, contacta directamente con nuestro estudio en ${this.firmInfo.location}:\n\n📞 ${this.firmInfo.phone}\n📱 ${this.firmInfo.mobile}\n✉️ ${this.firmInfo.email}`, 
+                    'bot'
+                );
             }
             
         } catch (error) {
-            console.error('Error al enviar mensaje:', error);
+            console.error('Error al enviar mensaje a TijaTija-Juridico:', error);
             this.hideTypingIndicator();
-            this.addMessage('Disculpa, hay un problema de conexión. Por favor intenta más tarde o contacta directamente con nosotros al teléfono (01) 234-5678.', 'bot');
+            this.addMessage(
+                `Disculpa, hay un problema de conexión. Por favor intenta más tarde o contacta directamente con TijaTija-Juridico en Andahuaylas:\n\n📍 ${this.firmInfo.address}\n📞 ${this.firmInfo.phone}\n📱 ${this.firmInfo.mobile}`, 
+                'bot'
+            );
         }
     }
 
-    // 🔥 MÉTODO ESPECÍFICO PARA EXTRAER MENSAJE DE RESPUESTA N8N
+    personalizeResponse(response) {
+        // Agregar contexto regional a ciertas respuestas
+        if (response.toLowerCase().includes('abogado') || response.toLowerCase().includes('legal')) {
+            if (!response.includes('Andahuaylas') && !response.includes('Apurímac')) {
+                response += `\n\n💼 En TijaTija-Juridico (${this.firmInfo.location}) estamos aquí para ayudarte con tu caso específico.`;
+            }
+        }
+        
+        // Agregar información de contacto si es relevante
+        if (response.toLowerCase().includes('consulta') || response.toLowerCase().includes('cita')) {
+            if (!response.includes(this.firmInfo.phone)) {
+                response += `\n\n📞 Agenda tu consulta llamando al ${this.firmInfo.phone} o al ${this.firmInfo.mobile}`;
+            }
+        }
+        
+        return response;
+    }
+
     extractMessageFromN8nResponse(response) {
-        console.log('🔍 Analizando respuesta de n8n:', response);
+        console.log('🔍 Analizando respuesta de n8n para TijaTija-Juridico:', response);
         
         if (!response) {
             console.log('❌ Respuesta vacía');
@@ -330,7 +368,7 @@ class LegalChatWidget {
         let message = '';
 
         try {
-            // 🔥 NUEVO: Si la respuesta es directamente un string
+            // Si la respuesta es directamente un string
             if (typeof response === 'string') {
                 message = response.trim();
                 console.log('✅ Mensaje extraído como string directo:', message);
@@ -387,12 +425,13 @@ class LegalChatWidget {
             }
 
         } catch (error) {
-            console.error('❌ Error al procesar respuesta:', error);
+            console.error('❌ Error al procesar respuesta de TijaTija-Juridico:', error);
         }
 
         console.log('❌ No se pudo extraer mensaje de la respuesta');
         return null;
     }
+
     cleanMessage(message) {
         if (!message) return '';
         
@@ -403,10 +442,10 @@ class LegalChatWidget {
         // Limpiar caracteres de escape innecesarios
         message = message.replace(/\\"/g, '"');
         
-        console.log('✅ Mensaje final limpiado:', message);
+        console.log('✅ Mensaje final limpiado para TijaTija-Juridico:', message);
         return message;
     }
-    // Método auxiliar para buscar mensaje recursivamente en cualquier objeto
+
     findMessageInObject(obj, depth = 0) {
         if (depth > 5) return null; // Evitar recursión infinita
         
@@ -448,16 +487,18 @@ class LegalChatWidget {
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent,
             url: window.location.href,
+            firmInfo: this.firmInfo,
+            location: 'Andahuaylas, Apurímac',
             messageHistory: this.messageHistory.slice(-5)
         };
 
-        console.log('📤 Enviando payload a n8n:', payload);
+        console.log('📤 Enviando payload a n8n desde TijaTija-Juridico:', payload);
 
         const response = await fetch(this.webhookUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'User-Agent': 'LegalChatWidget/1.0'
+                'User-Agent': 'TijaTija-Juridico-ChatWidget/1.0'
             },
             body: JSON.stringify(payload)
         });
@@ -466,10 +507,10 @@ class LegalChatWidget {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        // 🔥 NUEVO: Intentar JSON primero, si falla usar texto plano
+        // Intentar JSON primero, si falla usar texto plano
         let data;
         const responseText = await response.text();
-        console.log('📥 Respuesta cruda recibida:', responseText);
+        console.log('📥 Respuesta cruda recibida en TijaTija-Juridico:', responseText);
 
         try {
             // Intentar parsear como JSON
@@ -490,7 +531,8 @@ class LegalChatWidget {
         this.messageHistory.push({
             message: message,
             sender: sender,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            location: this.firmInfo.location
         });
 
         const messageElement = document.createElement('div');
@@ -525,10 +567,14 @@ class LegalChatWidget {
     }
 
     formatMessage(message) {
+        // Detectar URLs y convertirlas en links
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         message = message.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener">$1</a>');
         
+        // Convertir saltos de línea
         message = message.replace(/\n/g, '<br>');
+        
+        // Formatear texto en negrita y cursiva
         message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         message = message.replace(/\*(.*?)\*/g, '<em>$1</em>');
         
@@ -643,13 +689,16 @@ class LegalChatWidget {
     }
 
     diagnose() {
-        console.log('🔍 Diagnóstico del Chat Widget:');
+        console.log('🔍 Diagnóstico del Chat Widget TijaTija-Juridico:');
+        console.log('- Empresa:', this.firmInfo.name);
+        console.log('- Ubicación:', this.firmInfo.location);
         console.log('- Webhook URL:', this.webhookUrl);
         console.log('- Session ID:', this.sessionId);
         console.log('- Chat abierto:', this.isOpen);
         console.log('- Escribiendo:', this.isTyping);
         console.log('- Inicializado:', this.isInitialized);
         console.log('- Mensajes en historial:', this.messageHistory.length);
+        console.log('- Información del estudio:', this.firmInfo);
         console.log('- Elementos DOM:', {
             chatWidget: !!this.chatWidget,
             chatToggle: !!this.chatToggle,
@@ -661,6 +710,17 @@ class LegalChatWidget {
         });
         console.log('- Z-index del widget:', this.chatWidget ? getComputedStyle(this.chatWidget).zIndex : 'N/A');
     }
+
+    // Método para obtener información del estudio
+    getFirmInfo() {
+        return this.firmInfo;
+    }
+
+    // Método para actualizar información del estudio si es necesario
+    updateFirmInfo(newInfo) {
+        this.firmInfo = { ...this.firmInfo, ...newInfo };
+        console.log('📝 Información del estudio actualizada:', this.firmInfo);
+    }
 }
 
 // Inicializar el chat de forma segura
@@ -668,7 +728,7 @@ let legalChat;
 
 function initializeLegalChat() {
     if (window.legalChatInstance) {
-        console.warn('Chat ya inicializado');
+        console.warn('Chat TijaTija-Juridico ya inicializado');
         return;
     }
     
@@ -676,9 +736,9 @@ function initializeLegalChat() {
         legalChat = new LegalChatWidget();
         window.legalChat = legalChat;
         window.legalChatInstance = legalChat;
-        console.log('✅ Chat widget inicializado exitosamente');
+        console.log('✅ Chat widget TijaTija-Juridico inicializado exitosamente para Andahuaylas');
     } catch (error) {
-        console.error('❌ Error al inicializar chat widget:', error);
+        console.error('❌ Error al inicializar chat widget TijaTija-Juridico:', error);
     }
 }
 
@@ -688,13 +748,13 @@ if (document.readyState === 'loading') {
     setTimeout(initializeLegalChat, 100);
 }
 
-// Funciones de utilidad globales
+// Funciones de utilidad globales actualizadas
 window.chatUtils = {
     openChat: () => {
         if (window.legalChatInstance) {
             window.legalChatInstance.openChat();
         } else {
-            console.warn('Chat no inicializado');
+            console.warn('Chat TijaTija-Juridico no inicializado');
         }
     },
     
@@ -720,16 +780,30 @@ window.chatUtils = {
         return window.legalChatInstance ? window.legalChatInstance.getMessageHistory() : [];
     },
     
+    getFirmInfo: () => {
+        return window.legalChatInstance ? window.legalChatInstance.getFirmInfo() : null;
+    },
+    
     diagnose: () => {
         if (window.legalChatInstance) {
             window.legalChatInstance.diagnose();
         } else {
-            console.warn('Chat no inicializado para diagnóstico');
+            console.warn('Chat TijaTija-Juridico no inicializado para diagnóstico');
         }
     },
 
     isReady: () => {
         return !!(window.legalChatInstance && window.legalChatInstance.isInitialized);
+    },
+
+    // Función para mostrar información de contacto rápido
+    showContactInfo: () => {
+        if (window.legalChatInstance) {
+            const info = window.legalChatInstance.getFirmInfo();
+            const contactMessage = `📍 ${info.name}\n${info.address}\n\n📞 ${info.phone}\n📱 ${info.mobile}\n✉️ ${info.email}`;
+            window.legalChatInstance.addMessage(contactMessage, 'bot');
+            window.legalChatInstance.openChat();
+        }
     }
 };
 
