@@ -3,11 +3,13 @@
  * Coordina todos los módulos y maneja la inicialización
  */
 
-import { CONFIG, ConfigManager } from './core/config.js';
-import Utils from './core/utils.js';
-import { initializeNavigation } from './modules/navigation.js';
-import { initializeForms } from './modules/forms.js';
-import { initializeModals } from './modules/modals.js';
+import { CONFIG, ConfigManager } from './config.js';
+import Utils from './utils.js';
+import { initializeNavigation } from '../modules/navigation.js';
+import { initializeForms } from '../modules/forms.js';
+import { initializeModals } from '../modules/modals.js';
+import AnimationsManager from '../modules/animations.js';
+import LegalChatCore from '../chat/chat-core.js';
 
 export class LawFirmApp {
     constructor() {
@@ -121,9 +123,21 @@ export class LawFirmApp {
 
     async initializeCoreModules() {
         const modules = [
-            { name: 'navigation', init: initializeNavigation, critical: true },
-            { name: 'forms', init: initializeForms, critical: true },
-            { name: 'modals', init: initializeModals, critical: true }
+            { 
+                name: 'navigation', 
+                init: async () => await initializeNavigation(), 
+                critical: true 
+            },
+            { 
+                name: 'forms', 
+                init: async () => await initializeForms(), 
+                critical: true 
+            },
+            { 
+                name: 'modals', 
+                init: async () => await initializeModals(), 
+                critical: true 
+            }
         ];
 
         for (const module of modules) {
@@ -155,10 +169,8 @@ export class LawFirmApp {
         // Configurar accesibilidad
         this.setupAccessibility();
         
-        // Configurar PWA si está habilitado
-        if (CONFIG.pwa.enabled) {
-            await this.initializePWA();
-        }
+        // Inicializar chat
+        await this.initializeChat();
     }
 
     async initializeNonCriticalFeatures() {
@@ -183,35 +195,55 @@ export class LawFirmApp {
     // ===========================
 
     async initializeAnimations() {
-        if (ConfigManager.isReducedMotion()) {
-            Utils.Log.debug('Reduced motion detected, skipping animations');
-            return;
+        try {
+            if (ConfigManager.isReducedMotion()) {
+                Utils.Log.debug('Reduced motion detected, skipping animations');
+                return;
+            }
+
+            const animationsManager = new AnimationsManager();
+            this.modules.set('animations', animationsManager);
+            
+            Utils.Log.debug('✅ Animations initialized');
+        } catch (error) {
+            Utils.Log.error('Error initializing animations:', error);
         }
+    }
 
-        // Intersection Observer para animaciones
-        const animatedElements = Utils.DOM.selectAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in');
-        
-        if (animatedElements.length === 0 || !window.IntersectionObserver) return;
+    async initializeChat() {
+        try {
+            Utils.Log.debug('Initializing chat widget...');
+            
+            // Verificar que los elementos del chat existan
+            const chatWidget = document.getElementById('chat-widget');
+            if (!chatWidget) {
+                Utils.Log.warn('Chat widget elements not found, skipping chat initialization');
+                return;
+            }
 
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+            // Configuración del chat
+            const chatConfig = {
+                webhookUrl: CONFIG.api.baseUrl || 'https://singular-dear-jaybird.ngrok-free.app/webhook/cfa4d4c3-0f1c-49bc-b1f9-4d5c4b719b44',
+                enableNotifications: true,
+                enableSuggestions: true,
+                welcomeDelay: 3000,
+                autoOpen: false
+            };
 
-        this.animationObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    this.animationObserver.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
+            // Inicializar chat
+            const chatCore = new LegalChatCore(chatConfig);
+            this.modules.set('chat', chatCore);
+            
+            // Hacer disponible globalmente para debugging
+            if (ConfigManager.getDevConfig('debug.enabled')) {
+                window.legalChatCore = chatCore;
+            }
 
-        animatedElements.forEach(el => {
-            this.animationObserver.observe(el);
-        });
-
-        Utils.Log.debug(`Animation observer setup for ${animatedElements.length} elements`);
+            Utils.Log.debug('✅ Chat widget initialized');
+        } catch (error) {
+            Utils.Log.error('Error initializing chat:', error);
+            // No es crítico, continuar sin chat
+        }
     }
 
     async initializeLazyLoading() {
@@ -428,9 +460,6 @@ export class LawFirmApp {
         
         // Limpiar listeners innecesarios
         this.cleanupEventListeners();
-        
-        // Configurar cache de assets
-        this.setupAssetCaching();
     }
 
     preloadCriticalResources() {
@@ -462,9 +491,37 @@ export class LawFirmApp {
         window.removeEventListener('load', this.handleLoad);
     }
 
-    setupAssetCaching() {
-        // Configurar cache headers para assets estáticos (si aplicable)
-        // Esto se haría típicamente en el servidor, pero se puede configurar desde el cliente
+    // ===========================
+    // CONFIGURAR OBSERVADORES
+    // ===========================
+
+    setupObservers() {
+        // Intersection Observer para animaciones de scroll
+        if (window.IntersectionObserver) {
+            const animatedElements = Utils.DOM.selectAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in');
+            
+            if (animatedElements.length > 0) {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                this.animationObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            this.animationObserver.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+
+                animatedElements.forEach(el => {
+                    this.animationObserver.observe(el);
+                });
+
+                Utils.Log.debug(`Animation observer setup for ${animatedElements.length} elements`);
+            }
+        }
     }
 
     // ===========================
@@ -680,16 +737,14 @@ export function getApp() {
 // ===========================
 
 export async function initializeApp() {
-    const app = createApp();
-    await app.init();
-    return app;
-}
-
-// Inicializar automáticamente si estamos en el navegador
-if (typeof window !== 'undefined') {
-    initializeApp().catch(error => {
+    try {
+        const app = createApp();
+        await app.init();
+        return app;
+    } catch (error) {
         console.error('Failed to initialize LawFirm App:', error);
-    });
+        throw error;
+    }
 }
 
 export default LawFirmApp;
