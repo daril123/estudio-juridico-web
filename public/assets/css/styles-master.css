@@ -3,46 +3,35 @@
    Importa todos los módulos CSS en el orden correcto
    =========================== */
 
-/*
-   🎯 ORDEN DE CARGA IMPORTANTE:
-   1. Variables primero (definen toda la base)
-   2. Reset y tipografía (normaliza el navegador)
-   3. Componentes base (elementos reutilizables)
-   4. Layout (estructura principal)
-   5. Secciones (contenido específico)
-   6. Responsive (adaptaciones)
-   7. Chat (widget independiente)
-*/
-
 /* ===========================
    1. VARIABLES GLOBALES
    =========================== */
-@import url('../01-variables.css');
+@import url('../../01-variables.css');
 
 /* ===========================
    2. RESET Y TIPOGRAFÍA BASE
    =========================== */
-@import url('../02-reset.css');
+@import url('../../02-reset.css');
 
 /* ===========================
    3. COMPONENTES REUTILIZABLES
    =========================== */
-@import url('../03-components.css');
+@import url('../../03-components.css');
 
 /* ===========================
    4. LAYOUT PRINCIPAL
    =========================== */
-@import url('../04-layout.css');
+@import url('../../04-layout.css');
 
 /* ===========================
    5. SECCIONES DE CONTENIDO
    =========================== */
-@import url('../05-sections.css');
+@import url('../../05-sections.css');
 
 /* ===========================
    6. RESPONSIVE DESIGN
    =========================== */
-@import url('../06-responsive.css');
+@import url('../../06-responsive.css');
 
 /* ===========================
    7. CHAT WIDGET (Modular)
@@ -52,157 +41,284 @@
 @import url('chat-responsive.css');
 
 /* ===========================
-   VERIFICACIÓN DE CARGA
+   ESTILOS CRÍTICOS DE FALLBACK
    =========================== */
 
-/* Indicador visual de que todos los estilos se cargaron */
-html::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 2px;
-    height: 2px;
-    background: var(--success);
-    opacity: 0;
-    pointer-events: none;
-    z-index: -1;
-}
-
-/* ===========================
-   FALLBACK PARA ERRORES DE CARGA
-   =========================== */
-
-/* Si las variables CSS no cargan, usar fallbacks */
 :root {
-    /* Colores fallback */
+    /* Colores primarios */
     --primary-color: #0f2847;
+    --primary-light: #2c5aa0;
+    --primary-dark: #081a2e;
     --secondary-color: #d4af37;
+    --secondary-light: #fcdd86;
+    --secondary-dark: #b8941f;
+    
+    /* Colores de texto */
     --text-primary: #212529;
     --text-secondary: #495057;
+    --text-muted: #6c757d;
+    --text-white: #ffffff;
+    
+    /* Fondos */
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
-    --border-color: #dee2e6;
+    --bg-tertiary: #e9ecef;
+    --bg-muted: #e9ecef;
     
-    /* Espaciado fallback */
+    /* Bordes */
+    --border-color: #dee2e6;
+    --border-light: #e9ecef;
+    
+    /* Sistema */
+    --success: #28a745;
+    --warning: #ffc107;
+    --error: #dc3545;
+    --info: #17a2b8;
+    
+    /* Espaciado */
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
     --space-lg: 1.5rem;
     --space-xl: 2rem;
+    --space-2xl: 3rem;
     
-    /* Tipografía fallback */
-    --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-heading: Georgia, serif;
+    /* Tipografía */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-mono: 'Fira Code', monospace;
+    
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
     --text-base: 1rem;
     --text-lg: 1.125rem;
     --text-xl: 1.25rem;
     --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
     
-    /* Transiciones fallback */
-    --transition-base: all 0.3s ease;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+    
+    /* Transiciones */
     --transition-fast: all 0.15s ease;
+    --transition-base: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+    --transition-spring: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Sombras fallback */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    /* Sombras */
+    --shadow-sm: 0 1px 3px 0 rgba(15, 40, 71, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(15, 40, 71, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 40, 71, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(15, 40, 71, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(15, 40, 71, 0.25);
     
-    /* Border radius fallback */
-    --border-radius: 8px;
-    --border-radius-lg: 12px;
+    --shadow-gold-sm: 0 1px 3px 0 rgba(212, 175, 55, 0.2);
+    --shadow-gold-md: 0 4px 6px -1px rgba(212, 175, 55, 0.2);
+    --shadow-gold-lg: 0 10px 15px -3px rgba(212, 175, 55, 0.3);
+    
+    /* Border radius */
+    --border-radius-sm: 6px;
+    --border-radius: 10px;
+    --border-radius-lg: 16px;
     --border-radius-full: 9999px;
     
-    /* Z-index fallback */
+    /* Layout */
+    --max-width: 1200px;
+    
+    /* Z-index */
+    --z-base: 0;
     --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
     --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    --z-toast: 1080;
     --z-chat: 9999;
+    
+    /* Chat específico */
+    --chat-primary: var(--primary-color);
+    --chat-primary-light: var(--primary-light);
+    --chat-secondary: var(--secondary-color);
+    --chat-secondary-dark: var(--secondary-dark);
+    --chat-bg: var(--bg-primary);
+    --chat-bg-light: var(--bg-secondary);
+    --chat-text: var(--text-primary);
+    --chat-text-light: var(--text-muted);
+    --chat-shadow: var(--shadow-xl);
+    --chat-border-radius: var(--border-radius-lg);
+    --chat-z-index: var(--z-chat);
 }
 
-/* Estilos básicos de fallback si no cargan los módulos */
+/* Reset básico */
 * {
     box-sizing: border-box;
-}
-
-body {
-    font-family: var(--font-primary);
-    line-height: 1.5;
-    color: var(--text-primary);
-    background-color: var(--bg-primary);
     margin: 0;
     padding: 0;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
+html {
+    font-size: 16px;
+    line-height: 1.5;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+    font-family: var(--font-primary);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Contenedores */
+.container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+}
+
+/* Tipografía */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+h1 { font-size: var(--text-5xl); }
+h2 { font-size: var(--text-4xl); }
+h3 { font-size: var(--text-3xl); }
+h4 { font-size: var(--text-2xl); }
+h5 { font-size: var(--text-xl); }
+h6 { font-size: var(--text-lg); }
+
+p {
+    margin-bottom: var(--space-sm);
+    line-height: var(--leading-relaxed);
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+a:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
+}
+
+/* Botones base */
 .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border: none;
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    border: 2px solid transparent;
     border-radius: var(--border-radius);
     font-family: inherit;
     font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
     text-decoration: none;
-    text-align: center;
     cursor: pointer;
     transition: var(--transition-base);
+    min-height: 44px;
 }
 
 .btn-primary {
-    background: var(--primary-color);
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: var(--text-white);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
 .btn-secondary {
-    background: var(--secondary-color);
-    color: white;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
+    color: var(--text-white);
+    border-color: var(--secondary-color);
 }
 
+.btn-secondary:hover {
+    background: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold-lg);
+}
+
+/* Header base */
 .header {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
+    width: 100%;
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: var(--z-dropdown);
-    padding: 1rem 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    z-index: var(--z-fixed);
+    transition: var(--transition-base);
+}
+
+.navbar {
+    padding: var(--space-sm) 0;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
 }
 
 .nav-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 }
 
 .nav-logo {
-    font-size: var(--text-xl);
-    font-weight: bold;
-    color: var(--primary-color);
-    text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-xs);
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
+    align-items: center;
+    gap: var(--space-lg);
     margin: 0;
     padding: 0;
-    gap: 2rem;
 }
 
 .nav-link {
     color: var(--text-primary);
     text-decoration: none;
     transition: var(--transition-base);
+    padding: var(--space-sm) var(--space-xs);
 }
 
 .nav-link:hover {
@@ -211,165 +327,72 @@ body {
 
 .nav-toggle {
     display: none;
-    flex-direction: column;
-    background: none;
-    border: none;
-    cursor: pointer;
-    gap: 4px;
 }
 
-.bar {
-    width: 25px;
-    height: 3px;
-    background: var(--primary-color);
-    transition: var(--transition-base);
-}
-
+/* Main content */
 .main-content {
-    padding-top: 80px;
+    padding-top: 70px;
+    min-height: 100vh;
 }
 
+/* Hero básico */
+.hero {
+    padding: var(--space-2xl) 0;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Secciones */
 .section {
-    padding: 4rem 0;
+    padding: var(--space-2xl) 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
 }
 
 .section-title {
-    font-size: var(--text-2xl);
+    font-size: var(--text-4xl);
     color: var(--primary-color);
-    text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-sm);
+    font-family: var(--font-heading);
 }
 
-.hero {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
-.chat-widget {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: var(--z-chat);
-}
-
-.chat-toggle {
-    width: 64px;
-    height: 64px;
-    background: var(--primary-color);
-    border-radius: 50%;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow-lg);
-}
-
-.chat-window {
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-    width: 380px;
-    height: 600px;
-    background: white;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
-    display: none;
-    flex-direction: column;
-}
-
-.chat-window.active {
-    display: flex;
-}
-
-/* Media queries básicas */
+/* Responsive básico */
 @media (max-width: 768px) {
     .nav-toggle {
         display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .bar {
+        width: 25px;
+        height: 3px;
+        background: var(--primary-color);
+        transition: var(--transition-base);
     }
     
     .nav-menu {
-        display: none;
         position: fixed;
-        top: 80px;
-        left: 0;
-        right: 0;
-        background: white;
+        left: -100%;
+        top: 70px;
         flex-direction: column;
-        padding: 2rem;
-        box-shadow: var(--shadow-md);
+        background: rgba(255, 255, 255, 0.98);
+        width: 100%;
+        text-align: center;
+        transition: var(--transition-base);
+        box-shadow: var(--shadow-lg);
+        padding: var(--space-lg) 0;
     }
     
     .nav-menu.active {
-        display: flex;
-    }
-    
-    .container {
-        padding: 0 1rem;
-    }
-    
-    .hero {
-        min-height: 60vh;
-        text-align: center;
-    }
-    
-    .chat-window {
-        width: 100vw;
-        height: 100vh;
-        bottom: 0;
-        border-radius: 0;
-    }
-}
-
-/* ===========================
-   DEBUG MODE
-   =========================== */
-
-/* Mostrar información de carga en consola */
-@media screen {
-    html {
-        --debug-info: 'Styles Master CSS Loaded Successfully';
-    }
-}
-
-/* ===========================
-   PERFORMANCE OPTIMIZATIONS
-   =========================== */
-
-/* Critical rendering path optimization */
-.above-fold {
-    contain: layout style paint;
-}
-
-/* GPU acceleration for animations */
-.animate {
-    will-change: transform;
-    transform: translateZ(0);
-}
-
-/* Reduce repaints */
-.scroll-element {
-    contain: layout style;
-}
-
-/* ===========================
-   ERROR RECOVERY
-   =========================== */
-
-/* Si hay errores en CSS, al menos mostrar contenido legible */
-@supports not (display: grid) {
-    .grid {
-        display: flex;
-        flex-wrap: wrap;
-    }
-}
-
-@supports not (backdrop-filter: blur(10px)) {
-    .header {
-        background: rgba(255, 255, 255, 0.98);
+        left: 0;
     }
 }
