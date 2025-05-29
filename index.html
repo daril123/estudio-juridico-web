@@ -15,6 +15,128 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Crítico del Chat - Respaldo -->
+    <style>
+        /* CSS de respaldo para asegurar visibilidad del chat */
+        .chat-widget {
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            z-index: 9999 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+        }
+        
+        .chat-toggle {
+            width: 60px !important;
+            height: 60px !important;
+            border-radius: 50% !important;
+            background: #0f2847 !important;
+            border: none !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: white !important;
+            font-size: 24px !important;
+            box-shadow: 0 20px 25px -5px rgba(15, 40, 71, 0.1) !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            z-index: 10000 !important;
+        }
+        
+        .chat-window {
+            position: fixed !important;
+            bottom: 90px !important;
+            right: 20px !important;
+            width: 380px !important;
+            height: 600px !important;
+            background: white !important;
+            border-radius: 16px !important;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25) !important;
+            display: none !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            border: 1px solid rgba(0,0,0,0.1) !important;
+            z-index: 9999 !important;
+            transform: translateY(20px) scale(0.95) !important;
+            opacity: 0 !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .chat-window.active {
+            display: flex !important;
+            transform: translateY(0) scale(1) !important;
+            opacity: 1 !important;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #0f2847 0%, #2c5aa0 100%) !important;
+            color: white !important;
+            padding: 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            position: relative !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .chat-messages {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            padding: 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 16px !important;
+        }
+        
+        .chat-input-container {
+            background: white !important;
+            border-top: 1px solid rgba(0,0,0,0.1) !important;
+            padding: 16px !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .message {
+            display: flex !important;
+            gap: 8px !important;
+            max-width: 85% !important;
+        }
+        
+        .message-bubble {
+            background: #f5f6f7 !important;
+            padding: 8px 16px !important;
+            border-radius: 18px !important;
+            font-size: 14px !important;
+            line-height: 1.4 !important;
+            color: #333 !important;
+        }
+        
+        .chat-suggestions {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 4px !important;
+            margin-top: 8px !important;
+        }
+        
+        .suggestion-btn {
+            background: #f0f2f5 !important;
+            border: none !important;
+            border-radius: 16px !important;
+            padding: 6px 12px !important;
+            font-size: 11px !important;
+            color: #333 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        /* Mostrar elementos del chat cuando estén activos */
+        .chat-widget .chat-window.active {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -490,7 +612,7 @@
 
             <!-- Mensajes del chat -->
             <div class="chat-messages" id="chat-messages">
-                <div class="message bot-message">
+                <div class="message bot-message" id="welcome-message">
                     <div class="message-avatar">
                         <i class="fas fa-robot"></i>
                     </div>

@@ -143,6 +143,12 @@ export class ChatUI {
         
         // Limpiar notificaciones existentes
         this.cleanupExistingNotifications();
+        
+        // Asegurar que las sugerencias estén visibles inicialmente
+        this.showSuggestions();
+        
+        // Asegurar que el mensaje de bienvenida esté presente
+        this.ensureWelcomeMessage();
     }
 
     setupInput() {
@@ -180,8 +186,14 @@ export class ChatUI {
             this.elements.toggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                console.log('[ChatUI] Toggle clicked - iniciando apertura...');
                 this.emit('toggle');
             });
+            
+            // Debug adicional
+            console.log('[ChatUI] Toggle event listener agregado correctamente');
+        } else {
+            console.error('[ChatUI] Toggle button no encontrado - no se puede agregar event listener');
         }
 
         // Botón minimizar
@@ -244,6 +256,9 @@ export class ChatUI {
 
         // Eventos globales
         this.bindGlobalEvents();
+        
+        // Debug final
+        console.log('[ChatUI] Todos los eventos configurados correctamente');
     }
 
     bindGlobalEvents() {
@@ -273,6 +288,43 @@ export class ChatUI {
     // ========================
     // CONTROL DE VENTANA
     // ========================
+    
+    // Función para forzar visibilidad completa
+    forceVisible() {
+        if (!this.elements.window) return false;
+        
+        // Eliminar cualquier style que pueda estar ocultando
+        this.elements.window.removeAttribute('hidden');
+        this.elements.window.style.removeProperty('display');
+        
+        // Aplicar estilos críticos con !important
+        const criticalStyles = `
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: translateY(0) scale(1) !important;
+            z-index: 9999 !important;
+            position: fixed !important;
+            bottom: 90px !important;
+            right: 20px !important;
+            width: 380px !important;
+            height: 600px !important;
+            background: white !important;
+            border-radius: 16px !important;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25) !important;
+            border: 1px solid rgba(0,0,0,0.1) !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        `;
+        
+        // Aplicar estilos
+        this.elements.window.style.cssText = criticalStyles;
+        this.elements.window.classList.add('active');
+        
+        console.log('[ChatUI] Estilos críticos aplicados con !important');
+        return true;
+    }
+    
     async open() {
         if (!this.elements.window || !this.elements.toggle) {
             console.error('[ChatUI] No se puede abrir el chat: faltan elementos críticos', this.elements);
@@ -282,12 +334,14 @@ export class ChatUI {
         try {
             console.log('[ChatUI] Abriendo ventana del chat...');
             
-            // Mostrar ventana
-            this.elements.window.style.display = 'flex';
-            this.elements.window.classList.add('active');
-            this.elements.toggle.classList.add('active');
+            // FORZAR VISIBILIDAD COMPLETA
+            this.forceVisible();
             
-            // Activar clases
+            // FORZAR TOGGLE ACTIVO
+            this.elements.toggle.classList.add('active');
+            this.elements.toggle.style.zIndex = '10000';
+            
+            // Esperar un frame para aplicar estilos
             await this.nextFrame();
             
             // Iconos
@@ -304,6 +358,28 @@ export class ChatUI {
             
             // Ocultar notificación
             this.hideNotification();
+            
+            // Asegurar que el mensaje de bienvenida esté visible
+            this.ensureWelcomeMessage();
+            
+            // Mostrar sugerencias
+            this.showSuggestions();
+            
+            // Debug: Verificar estilos aplicados
+            console.log('[ChatUI] Estado final del chat window:', {
+                display: window.getComputedStyle(this.elements.window).display,
+                visibility: window.getComputedStyle(this.elements.window).visibility,
+                opacity: window.getComputedStyle(this.elements.window).opacity,
+                zIndex: window.getComputedStyle(this.elements.window).zIndex,
+                position: window.getComputedStyle(this.elements.window).position,
+                classList: this.elements.window.classList.toString(),
+                boundingRect: this.elements.window.getBoundingClientRect()
+            });
+            
+            // Verificar que el elemento sea realmente visible
+            const rect = this.elements.window.getBoundingClientRect();
+            const isVisible = rect.width > 0 && rect.height > 0;
+            console.log('[ChatUI] ¿Elemento visible en pantalla?', isVisible);
             
             // Focus en input
             setTimeout(() => {
@@ -369,6 +445,53 @@ export class ChatUI {
     // ========================
     // MENSAJES
     // ========================
+    ensureWelcomeMessage() {
+        if (!this.elements.messages) return;
+        
+        // Verificar si ya existe el mensaje de bienvenida
+        const existingWelcome = this.elements.messages.querySelector('#welcome-message');
+        
+        if (!existingWelcome) {
+            // Crear mensaje de bienvenida si no existe
+            const welcomeMessage = this.createWelcomeMessage();
+            this.elements.messages.appendChild(welcomeMessage);
+        }
+        
+        // Asegurar que sea visible
+        if (existingWelcome) {
+            existingWelcome.style.display = 'flex';
+            existingWelcome.style.opacity = '1';
+        }
+    }
+    
+    createWelcomeMessage() {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message bot-message';
+        messageDiv.id = 'welcome-message';
+        
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-bubble">
+                    ¡Bienvenido a TijaTija-Juridico! Soy tu asistente legal virtual. Puedo ayudarte con consultas sobre:
+                    <br><br>
+                    • Derecho Civil y Familiar<br>
+                    • Derecho Penal<br>
+                    • Derecho Laboral<br>
+                    • Derecho Corporativo<br>
+                    • Información legal específica de Apurímac
+                    <br><br>
+                    ¿En qué puedo asistirte hoy?
+                </div>
+                <div class="message-time">Ahora</div>
+            </div>
+        `;
+        
+        return messageDiv;
+    }
+
     addMessage(message) {
         if (!this.elements.messages) return;
 
@@ -383,8 +506,9 @@ export class ChatUI {
             this.scrollToBottom();
         }
         
-        // Ocultar sugerencias después del primer mensaje
-        if (this.core.messageHistory.length > 1) {
+        // Ocultar sugerencias solo después del primer mensaje del usuario
+        const userMessages = this.core?.messageHistory?.filter(msg => msg.sender === 'user') || [];
+        if (userMessages.length >= 1) {
             this.hideSuggestions();
         }
     }
@@ -479,14 +603,23 @@ export class ChatUI {
         // Mantener mensaje de bienvenida
         const welcomeMessage = this.elements.messages.querySelector('#welcome-message');
         
+        // Limpiar todos los mensajes
         this.elements.messages.innerHTML = '';
         
+        // Restaurar mensaje de bienvenida
         if (welcomeMessage) {
             this.elements.messages.appendChild(welcomeMessage.cloneNode(true));
+        } else {
+            // Crear uno nuevo si no existía
+            const newWelcomeMessage = this.createWelcomeMessage();
+            this.elements.messages.appendChild(newWelcomeMessage);
         }
         
         // Mostrar sugerencias de nuevo
         this.showSuggestions();
+        
+        // Scroll al inicio
+        this.scrollToBottom();
     }
 
     // ========================
