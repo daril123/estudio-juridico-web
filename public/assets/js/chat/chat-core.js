@@ -40,8 +40,6 @@ export class LegalChatCore {
             welcomeDelay: 2000,
             ...options
         };
-        
-        this.init();
     }
 
     // ========================
@@ -54,10 +52,12 @@ export class LegalChatCore {
         }
 
         try {
-            // Verificar si ya existe una instancia
+            // Si ya existe una instancia previa, destruirla antes de continuar
             if (window.legalChatInstance) {
-                console.warn('Ya existe una instancia del chat');
-                return false;
+                if (typeof window.legalChatInstance.destroy === 'function') {
+                    window.legalChatInstance.destroy();
+                }
+                window.legalChatInstance = null;
             }
 
             // Esperar a que el DOM esté listo
@@ -189,11 +189,20 @@ export class LegalChatCore {
     }
 
     async open() {
-        if (this.isOpen || !this.isInitialized) return false;
+        if (this.isOpen || !this.isInitialized) {
+            console.log('[ChatCore] Chat ya está abierto o no está inicializado');
+            return false;
+        }
         
         try {
+            console.log('[ChatCore] Intentando abrir el chat...');
+            
             // Abrir UI
-            await this.ui.open();
+            const opened = await this.ui.open();
+            if (!opened) {
+                console.error('[ChatCore] No se pudo abrir la UI del chat');
+                return false;
+            }
             
             // Actualizar estado
             this.isOpen = true;
@@ -202,10 +211,11 @@ export class LegalChatCore {
             // Analytics/tracking
             this.trackEvent('chat_opened');
             
+            console.log('[ChatCore] Chat abierto exitosamente');
             return true;
             
         } catch (error) {
-            console.error('Error al abrir chat:', error);
+            console.error('[ChatCore] Error al abrir chat:', error);
             this.emit('error', { type: 'open', error });
             return false;
         }

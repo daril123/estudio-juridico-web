@@ -4,6 +4,7 @@
  */
 
 import { CONFIG } from '../core/config.js';
+import { ConfigManager } from '../core/config.js';
 import Utils from '../core/utils.js';
 
 export class FormManager {
@@ -687,9 +688,15 @@ export function initializeForms() {
     }
 
     formManagerInstance = createFormManager();
-    
-    if (Utils.ConfigManager.getDevConfig('debug.enabled')) {
+
+    // Logs de depuración para ConfigManager
+    console.log('ConfigManager:', ConfigManager);
+    console.log('getDevConfig:', ConfigManager?.getDevConfig);
+
+    if (ConfigManager && typeof ConfigManager.getDevConfig === 'function' && ConfigManager.getDevConfig('debug.enabled')) {
         window.formManager = formManagerInstance;
+    } else if (!ConfigManager || typeof ConfigManager.getDevConfig !== 'function') {
+        Utils.Log.error('ConfigManager o getDevConfig no están definidos correctamente en forms.js');
     }
 
     return formManagerInstance;

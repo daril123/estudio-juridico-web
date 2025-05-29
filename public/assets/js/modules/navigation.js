@@ -3,7 +3,7 @@
  * Maneja header, menú móvil, scroll effects y navegación
  */
 
-import { CONFIG } from '../core/config.js';
+import { CONFIG, ConfigManager } from '../core/config.js';
 import Utils from '../core/utils.js';
 
 export class NavigationManager {
@@ -111,7 +111,7 @@ export class NavigationManager {
     }
 
     handleHeaderAutoHide(currentScrollY) {
-        if (!Utils.ConfigManager.isMobile()) return;
+        if (!(ConfigManager && typeof ConfigManager.isMobile === 'function' && ConfigManager.isMobile())) return;
 
         const deltaY = currentScrollY - this.state.lastScrollY;
         const isScrollingDown = deltaY > 0;
@@ -188,7 +188,7 @@ export class NavigationManager {
 
     handleResize() {
         // Cerrar menú móvil en resize a desktop
-        if (!Utils.ConfigManager.isMobile() && this.state.isMenuOpen) {
+        if (ConfigManager && typeof ConfigManager.isMobile === 'function' && !ConfigManager.isMobile() && this.state.isMenuOpen) {
             this.closeMobileMenu();
         }
 
@@ -456,7 +456,7 @@ export function initializeNavigation() {
     navigationManagerInstance = createNavigationManager();
     
     // Hacer disponible globalmente para debugging
-    if (Utils.ConfigManager.getDevConfig('debug.enabled')) {
+    if (ConfigManager && typeof ConfigManager.getDevConfig === 'function' && ConfigManager.getDevConfig('debug.enabled')) {
         window.navigationManager = navigationManagerInstance;
     }
 

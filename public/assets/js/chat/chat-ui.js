@@ -35,6 +35,7 @@ export class ChatUI {
             
             // Validar elementos críticos
             if (!this.validateElements()) {
+                console.error('[ChatUI] Elementos críticos del chat no encontrados:', this.elements);
                 throw new Error('Elementos críticos del chat no encontrados');
             }
             
@@ -273,16 +274,21 @@ export class ChatUI {
     // CONTROL DE VENTANA
     // ========================
     async open() {
-        if (!this.elements.window || !this.elements.toggle) return false;
+        if (!this.elements.window || !this.elements.toggle) {
+            console.error('[ChatUI] No se puede abrir el chat: faltan elementos críticos', this.elements);
+            return false;
+        }
         
         try {
+            console.log('[ChatUI] Abriendo ventana del chat...');
+            
             // Mostrar ventana
             this.elements.window.style.display = 'flex';
+            this.elements.window.classList.add('active');
+            this.elements.toggle.classList.add('active');
             
             // Activar clases
             await this.nextFrame();
-            this.elements.window.classList.add('active');
-            this.elements.toggle.classList.add('active');
             
             // Iconos
             this.toggleIcons(true);
@@ -309,10 +315,11 @@ export class ChatUI {
             // Scroll a bottom
             this.scrollToBottom();
             
+            console.log('[ChatUI] Ventana del chat abierta exitosamente');
             return true;
             
         } catch (error) {
-            console.error('Error al abrir chat UI:', error);
+            console.error('[ChatUI] Error al abrir chat UI:', error);
             return false;
         }
     }

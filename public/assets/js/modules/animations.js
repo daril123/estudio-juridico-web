@@ -273,7 +273,7 @@ export class AnimationsManager {
     // EFECTOS PARALLAX
     // ========================
     setupParallax() {
-        if (CONFIG.performance?.reduceMotion) return;
+        if (typeof CONFIG === 'undefined' || !CONFIG.performance || CONFIG.performance.reduceMotion) return;
 
         const parallaxElements = document.querySelectorAll('[data-parallax]');
         
@@ -290,6 +290,7 @@ export class AnimationsManager {
 
     setupLegacyParallax() {
         window.addEventListener('scroll', Utils.debounce(() => {
+            if (typeof CONFIG === 'undefined') return;
             const scrolled = window.pageYOffset;
             const parallaxElements = document.querySelectorAll('.hero::before');
             

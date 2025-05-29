@@ -1,0 +1,34 @@
+<link rel="stylesheet" href="public/assets/css/styles-master.css"> 
+
+<!-- CHAT WIDGET -->
+<!-- Eliminado para evitar duplicidad y conflictos de inicialización. Usar solo el widget de index.html -->
+
+<script type="module">
+  import { LawFirmApp } from './assets/js/core/app.js';
+  
+  // Inicializar la aplicación
+  const app = new LawFirmApp();
+  app.init().catch(error => {
+    console.error('Error al inicializar la aplicación:', error);
+  });
+</script>
+
+<script>
+// Script de depuración temporal para forzar la visualización del chat
+window.debugChat = function() {
+  const win = document.querySelector('#chat-window');
+  if (win) {
+    win.style.display = 'flex';
+    win.classList.add('active');
+    win.style.opacity = 1;
+    win.style.visibility = 'visible';
+    console.log('Forzado: display=flex, active, visible', win, win.style.display, win.className);
+  } else {
+    console.warn('No se encontró #chat-window');
+  }
+  const widget = document.querySelector('#chat-widget');
+  console.log('Widget:', widget);
+};
+</script>
+
+</body> 

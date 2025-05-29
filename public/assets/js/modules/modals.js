@@ -4,6 +4,7 @@
  */
 
 import { CONFIG } from '../core/config.js';
+import { ConfigManager } from '../core/config.js';
 import Utils from '../core/utils.js';
 
 export class ModalManager {
@@ -98,7 +99,7 @@ export class ModalManager {
                 backdrop: true,
                 keyboard: true,
                 focus: true,
-                animation: !Utils.ConfigManager.isReducedMotion(),
+                animation: !(ConfigManager && typeof ConfigManager.isReducedMotion === 'function' && ConfigManager.isReducedMotion()),
                 autoFocus: true,
                 restoreFocus: true,
                 ...options
@@ -155,7 +156,7 @@ export class ModalManager {
         }
 
         // Evitar conflictos con el chat
-        if (window.legalChatInstance?.isOpen && Utils.ConfigManager.isMobile()) {
+        if (window.legalChatInstance?.isOpen && ConfigManager && typeof ConfigManager.isMobile === 'function' && ConfigManager.isMobile()) {
             Utils.Log.debug('Chat is open, not opening modal on mobile');
             return false;
         }
@@ -679,7 +680,7 @@ export function initializeModals() {
         show: modalManagerInstance.showNotification.bind(modalManagerInstance)
     };
     
-    if (Utils.ConfigManager.getDevConfig('debug.enabled')) {
+    if (ConfigManager && typeof ConfigManager.getDevConfig === 'function' && ConfigManager.getDevConfig('debug.enabled')) {
         window.modalManager = modalManagerInstance;
     }
 

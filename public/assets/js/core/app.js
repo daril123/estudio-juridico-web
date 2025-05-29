@@ -3,13 +3,15 @@
  * Coordina todos los módulos y maneja la inicialización
  */
 
-import { CONFIG, ConfigManager } from './config.js';
+import { CONFIG, ConfigManager, CHAT_CONFIG } from './config.js';
 import Utils from './utils.js';
 import { initializeNavigation } from '../modules/navigation.js';
 import { initializeForms } from '../modules/forms.js';
 import { initializeModals } from '../modules/modals.js';
 import AnimationsManager from '../modules/animations.js';
-import LegalChatCore from '../chat/chat-core.js';
+import { LegalChatCore } from '../chat/chat-core.js';
+
+window.LOG_LEVEL = (ConfigManager && typeof ConfigManager.getDevConfig === 'function') ? ConfigManager.getDevConfig('logging.level') : 'warn';
 
 export class LawFirmApp {
     constructor() {
@@ -185,7 +187,7 @@ export class LawFirmApp {
         }
         
         // Configurar modo debug si está habilitado
-        if (ConfigManager.getDevConfig('debug.enabled')) {
+        if (ConfigManager && typeof ConfigManager.getDevConfig === 'function' && ConfigManager.getDevConfig('debug.enabled')) {
             await this.initializeDebugMode();
         }
     }
@@ -221,21 +223,23 @@ export class LawFirmApp {
                 return;
             }
 
-            // Configuración del chat
+            // Usar la configuración del chat
             const chatConfig = {
-                webhookUrl: CONFIG.api.baseUrl || 'https://singular-dear-jaybird.ngrok-free.app/webhook/cfa4d4c3-0f1c-49bc-b1f9-4d5c4b719b44',
+                ...CHAT_CONFIG,
+                webhookUrl: CHAT_CONFIG.webhookUrl || CONFIG.api.baseUrl,
                 enableNotifications: true,
                 enableSuggestions: true,
-                welcomeDelay: 3000,
-                autoOpen: false
+                welcomeDelay: CHAT_CONFIG.behavior.welcomeDelay,
+                autoOpen: CHAT_CONFIG.behavior.autoOpen
             };
 
             // Inicializar chat
             const chatCore = new LegalChatCore(chatConfig);
+            await chatCore.init();
             this.modules.set('chat', chatCore);
             
             // Hacer disponible globalmente para debugging
-            if (ConfigManager.getDevConfig('debug.enabled')) {
+            if (ConfigManager && typeof ConfigManager.getDevConfig === 'function' && ConfigManager.getDevConfig('debug.enabled')) {
                 window.legalChatCore = chatCore;
             }
 
@@ -557,7 +561,7 @@ export class LawFirmApp {
         }
         
         // Mostrar error al usuario en desarrollo
-        if (ConfigManager.getDevConfig('debug.enabled')) {
+        if (ConfigManager && typeof ConfigManager.getDevConfig === 'function' && ConfigManager.getDevConfig('debug.enabled')) {
             console.error('🚨 Application Error:', error);
         }
     }

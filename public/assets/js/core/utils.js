@@ -3,7 +3,7 @@
  * Funciones auxiliares reutilizables en toda la aplicación
  */
 
-import { CONFIG, ConfigManager } from './config.js';
+import { CONFIG } from './config.js';
 
 // ===========================
 // UTILIDADES DE RENDIMIENTO
@@ -71,14 +71,13 @@ export class PerformanceUtils {
      * Medir tiempo de ejecución
      */
     static measure(name, func) {
-        if (!ConfigManager.getDevConfig('debug.performance')) {
+        const logLevel = window.LOG_LEVEL || 'warn';
+        if (logLevel !== 'debug' && logLevel !== 'performance') {
             return func();
         }
-
         const start = performance.now();
         const result = func();
         const end = performance.now();
-        
         console.log(`⚡ ${name}: ${(end - start).toFixed(2)}ms`);
         return result;
     }
@@ -168,7 +167,7 @@ export class DOMUtils {
         
         const targetPosition = element.offsetTop - offset;
         
-        if (CSS.supports('scroll-behavior', 'smooth') && !ConfigManager.isReducedMotion()) {
+        if (window.CSS && CSS.supports('scroll-behavior', 'smooth') && window.matchMedia('(prefers-reduced-motion: reduce)').matches === false) {
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -212,7 +211,7 @@ export class DOMUtils {
      */
     static waitForTransition(element, property = 'all') {
         return new Promise(resolve => {
-            if (!element || ConfigManager.isReducedMotion()) {
+            if (!element || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
                 resolve();
                 return;
             }
@@ -538,7 +537,7 @@ export class EventUtils {
 
 export class LogUtils {
     static log(message, type = 'info', data = null) {
-        const logLevel = ConfigManager.getDevConfig('logging.level');
+        const logLevel = window.LOG_LEVEL || 'warn';
         const levels = ['error', 'warn', 'info', 'debug'];
         const currentLevelIndex = levels.indexOf(logLevel);
         const messageTypeIndex = levels.indexOf(type);
@@ -581,8 +580,9 @@ export class DeviceUtils {
      * Detectar tipo de dispositivo
      */
     static getDeviceType() {
-        if (ConfigManager.isMobile()) return 'mobile';
-        if (ConfigManager.isTablet()) return 'tablet';
+        const width = window.innerWidth;
+        if (width < 576) return 'mobile';
+        if (width < 992) return 'tablet';
         return 'desktop';
     }
 
