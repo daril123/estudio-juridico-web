@@ -1,7 +1,9 @@
 // Chat AI Handler
+import { N8NIntegration } from '../core/n8n-config.js';
+
 class ChatAI {
     constructor() {
-        this.apiUrl = '/api/chat'; // Ajusta esto a tu endpoint real
+        this.n8n = new N8NIntegration();
         this.isProcessing = false;
     }
 
@@ -14,11 +16,15 @@ class ChatAI {
             // Mostrar mensaje del usuario
             window.chatWidget.addMessage(message, false);
             
-            // Simular respuesta de la IA (reemplazar con tu lógica real)
-            const response = await this.getAIResponse(message);
+            // Enviar mensaje a n8n y obtener respuesta
+            const response = await this.n8n.sendMessage(message);
             
-            // Mostrar respuesta de la IA
-            window.chatWidget.addMessage(response);
+            // Mostrar respuesta de la IA solo si hay una respuesta válida
+            if (response && typeof response === 'string' && response.trim()) {
+                window.chatWidget.addMessage(response);
+            } else {
+                throw new Error('Respuesta inválida del servidor');
+            }
             
         } catch (error) {
             console.error('Error al procesar mensaje:', error);
@@ -27,17 +33,9 @@ class ChatAI {
             this.isProcessing = false;
         }
     }
-
-    async getAIResponse(message) {
-        // Aquí deberías implementar la llamada real a tu API de IA
-        // Por ahora, retornamos una respuesta simulada
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve('Gracias por tu consulta. Como asistente legal virtual, puedo ayudarte con información general sobre temas legales. Sin embargo, para casos específicos, te recomiendo consultar con un abogado en persona. ¿Hay algo más en lo que pueda ayudarte?');
-            }, 1000);
-        });
-    }
 }
+
+export default ChatAI;
 
 // Inicializar el chat AI cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {

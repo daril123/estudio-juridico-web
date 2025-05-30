@@ -9,134 +9,13 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="public/assets/css/styles-master.css">
+    <link rel="stylesheet" href="public/assets/css/chat.css">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- CSS Crítico del Chat - Respaldo -->
-    <style>
-        /* CSS de respaldo para asegurar visibilidad del chat */
-        .chat-widget {
-            position: fixed !important;
-            bottom: 20px !important;
-            right: 20px !important;
-            z-index: 9999 !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-        }
-        
-        .chat-toggle {
-            width: 60px !important;
-            height: 60px !important;
-            border-radius: 50% !important;
-            background: #0f2847 !important;
-            border: none !important;
-            cursor: pointer !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: white !important;
-            font-size: 24px !important;
-            box-shadow: 0 20px 25px -5px rgba(15, 40, 71, 0.1) !important;
-            transition: all 0.3s ease !important;
-            position: relative !important;
-            z-index: 10000 !important;
-        }
-        
-        .chat-window {
-            position: fixed !important;
-            bottom: 90px !important;
-            right: 20px !important;
-            width: 380px !important;
-            height: 600px !important;
-            background: white !important;
-            border-radius: 16px !important;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25) !important;
-            display: none !important;
-            flex-direction: column !important;
-            overflow: hidden !important;
-            border: 1px solid rgba(0,0,0,0.1) !important;
-            z-index: 9999 !important;
-            transform: translateY(20px) scale(0.95) !important;
-            opacity: 0 !important;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        }
-        
-        .chat-window.active {
-            display: flex !important;
-            transform: translateY(0) scale(1) !important;
-            opacity: 1 !important;
-        }
-        
-        .chat-header {
-            background: linear-gradient(135deg, #0f2847 0%, #2c5aa0 100%) !important;
-            color: white !important;
-            padding: 16px !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
-            position: relative !important;
-            flex-shrink: 0 !important;
-        }
-        
-        .chat-messages {
-            flex: 1 !important;
-            overflow-y: auto !important;
-            padding: 16px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 16px !important;
-        }
-        
-        .chat-input-container {
-            background: white !important;
-            border-top: 1px solid rgba(0,0,0,0.1) !important;
-            padding: 16px !important;
-            flex-shrink: 0 !important;
-        }
-        
-        .message {
-            display: flex !important;
-            gap: 8px !important;
-            max-width: 85% !important;
-        }
-        
-        .message-bubble {
-            background: #f5f6f7 !important;
-            padding: 8px 16px !important;
-            border-radius: 18px !important;
-            font-size: 14px !important;
-            line-height: 1.4 !important;
-            color: #333 !important;
-        }
-        
-        .chat-suggestions {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            gap: 4px !important;
-            margin-top: 8px !important;
-        }
-        
-        .suggestion-btn {
-            background: #f0f2f5 !important;
-            border: none !important;
-            border-radius: 16px !important;
-            padding: 6px 12px !important;
-            font-size: 11px !important;
-            color: #333 !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        /* Mostrar elementos del chat cuando estén activos */
-        .chat-widget .chat-window.active {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -575,171 +454,602 @@
     </div>
 
     <!-- CHAT WIDGET JURÍDICO -->
-    <div class="chat-widget" id="chat-widget">
-        <!-- Botón flotante del chat -->
-        <button class="chat-toggle" id="chat-toggle">
-            <span class="chat-icon">
-                <i class="fas fa-comments"></i>
-            </span>
-            <span class="chat-close-icon">
-                <i class="fas fa-times"></i>
-            </span>
-        </button>
+    <!-- CHAT WIDGET AUTOCONTENIDO -->
+<!-- Copia este código COMPLETO y reemplaza la sección del chat en tu index.html -->
 
-        <!-- Notificación de bienvenida -->
-        <div class="chat-notification" id="chat-notification">
-            ¡Hola! ¿Necesitas asesoría legal en Andahuaylas?
+<style>
+/* ESTILOS CRÍTICOS DEL CHAT - INLINE PARA GARANTIZAR FUNCIONAMIENTO */
+.chat-widget {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 999999 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+.chat-toggle {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    background: #0f2847 !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 24px !important;
+    box-shadow: 0 8px 25px rgba(15, 40, 71, 0.3) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    z-index: 1000000 !important;
+}
+
+.chat-toggle:hover {
+    transform: scale(1.05) !important;
+    background: #2c5aa0 !important;
+    box-shadow: 0 12px 35px rgba(15, 40, 71, 0.4) !important;
+}
+
+.chat-toggle.active {
+    background: #d4af37 !important;
+}
+
+.chat-toggle .chat-close-icon {
+    display: none !important;
+}
+
+.chat-toggle.active .chat-icon {
+    display: none !important;
+}
+
+.chat-toggle.active .chat-close-icon {
+    display: block !important;
+}
+
+.chat-window {
+    position: fixed !important;
+    bottom: 90px !important;
+    right: 20px !important;
+    width: 380px !important;
+    height: 600px !important;
+    background: white !important;
+    border-radius: 16px !important;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25) !important;
+    display: none !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    z-index: 999998 !important;
+    opacity: 0 !important;
+    transform: translateY(20px) scale(0.95) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.chat-window.active {
+    display: flex !important;
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+    visibility: visible !important;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #0f2847 0%, #2c5aa0 100%) !important;
+    color: white !important;
+    padding: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-shrink: 0 !important;
+}
+
+.chat-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255,255,255,0.2) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    color: white !important;
+}
+
+.chat-info {
+    flex: 1 !important;
+}
+
+.chat-info h4 {
+    margin: 0 0 4px 0 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: white !important;
+}
+
+.chat-status {
+    font-size: 12px !important;
+    opacity: 0.9 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    color: white !important;
+}
+
+.status-dot {
+    width: 8px !important;
+    height: 8px !important;
+    background: #2ecc71 !important;
+    border-radius: 50% !important;
+    display: inline-block !important;
+}
+
+.chat-minimize {
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    font-size: 18px !important;
+    opacity: 0.8 !important;
+    transition: opacity 0.2s !important;
+    border-radius: 4px !important;
+}
+
+.chat-minimize:hover {
+    opacity: 1 !important;
+    background: rgba(255,255,255,0.1) !important;
+}
+
+.chat-messages {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    background: #f8f9fa !important;
+}
+
+.message {
+    display: flex !important;
+    gap: 8px !important;
+    max-width: 85% !important;
+    align-items: flex-start !important;
+}
+
+.message.user-message {
+    margin-left: auto !important;
+    flex-direction: row-reverse !important;
+}
+
+.message-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    background: #0f2847 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 14px !important;
+    flex-shrink: 0 !important;
+}
+
+.message.user-message .message-avatar {
+    background: #d4af37 !important;
+}
+
+.message-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+}
+
+.message.user-message .message-content {
+    align-items: flex-end !important;
+}
+
+.message-bubble {
+    background: white !important;
+    padding: 12px 16px !important;
+    border-radius: 18px !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    color: #333 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+    border: 1px solid #e9ecef !important;
+    max-width: 280px !important;
+    word-wrap: break-word !important;
+}
+
+.message.user-message .message-bubble {
+    background: #d4af37 !important;
+    color: white !important;
+    border-color: #d4af37 !important;
+}
+
+.message-time {
+    font-size: 11px !important;
+    color: #6c757d !important;
+    padding: 0 8px !important;
+}
+
+.message.user-message .message-time {
+    color: #6c757d !important;
+    text-align: right !important;
+}
+
+.chat-input-container {
+    background: white !important;
+    border-top: 1px solid #e9ecef !important;
+    padding: 16px !important;
+    flex-shrink: 0 !important;
+}
+
+.chat-input-wrapper {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: flex-end !important;
+    background: #f8f9fa !important;
+    border: 2px solid transparent !important;
+    border-radius: 24px !important;
+    padding: 8px 12px !important;
+    transition: all 0.3s ease !important;
+    min-height: 44px !important;
+}
+
+.chat-input-wrapper:focus-within {
+    border-color: #d4af37 !important;
+    background: white !important;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
+}
+
+.chat-input {
+    flex: 1 !important;
+    border: none !important;
+    background: transparent !important;
+    resize: none !important;
+    outline: none !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    color: #333 !important;
+    max-height: 100px !important;
+    min-height: 20px !important;
+    padding: 8px 0 !important;
+}
+
+.chat-input::placeholder {
+    color: #6c757d !important;
+}
+
+.chat-send {
+    width: 36px !important;
+    height: 36px !important;
+    background: #d4af37 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: white !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease !important;
+    flex-shrink: 0 !important;
+    font-size: 14px !important;
+}
+
+.chat-send:hover:not(:disabled) {
+    background: #b8941f !important;
+    transform: scale(1.05) !important;
+}
+
+.chat-send:disabled {
+    background: #ccc !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+.chat-suggestions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 12px !important;
+    transition: all 0.3s ease !important;
+}
+
+.chat-suggestions.hidden {
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+    pointer-events: none !important;
+}
+
+.suggestion-btn {
+    background: white !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    color: #495057 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-family: inherit !important;
+    white-space: nowrap !important;
+    max-width: 150px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.suggestion-btn:hover {
+    background: #0f2847 !important;
+    color: white !important;
+    border-color: #0f2847 !important;
+    transform: translateY(-1px) !important;
+}
+
+.chat-footer {
+    text-align: center !important;
+    margin-top: 8px !important;
+}
+
+.chat-footer small {
+    color: #6c757d !important;
+    font-size: 10px !important;
+}
+
+.typing-indicator {
+    display: none !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+    margin-bottom: 8px !important;
+}
+
+.typing-indicator.show {
+    display: flex !important;
+}
+
+.typing-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    background: #0f2847 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+}
+
+.typing-bubble {
+    background: white !important;
+    padding: 12px 16px !important;
+    border-radius: 18px !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+    border: 1px solid #e9ecef !important;
+}
+
+.typing-dots {
+    display: flex !important;
+    gap: 4px !important;
+    justify-content: center !important;
+}
+
+.typing-dots span {
+    width: 6px !important;
+    height: 6px !important;
+    background: #6c757d !important;
+    border-radius: 50% !important;
+    animation: typingDot 1.4s infinite ease-in-out !important;
+}
+
+.typing-dots span:nth-child(1) { 
+    animation-delay: -0.32s !important; 
+}
+
+.typing-dots span:nth-child(2) { 
+    animation-delay: -0.16s !important; 
+}
+
+@keyframes typingDot {
+    0%, 80%, 100% { 
+        transform: scale(0) !important; 
+        opacity: 0.5 !important; 
+    }
+    40% { 
+        transform: scale(1) !important; 
+        opacity: 1 !important; 
+    }
+}
+
+.chat-notification {
+    position: absolute !important;
+    bottom: 80px !important;
+    right: 0 !important;
+    background: white !important;
+    color: #0f2847 !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    max-width: 250px !important;
+    display: none !important;
+    border: 1px solid #e9ecef !important;
+    z-index: 999997 !important;
+}
+
+.chat-notification.show {
+    display: block !important;
+}
+
+.chat-notification::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -6px !important;
+    right: 20px !important;
+    width: 12px !important;
+    height: 12px !important;
+    background: white !important;
+    border: 1px solid #e9ecef !important;
+    border-top: none !important;
+    border-left: none !important;
+    transform: rotate(45deg) !important;
+}
+
+.chat-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0,0,0,0.5) !important;
+    z-index: 999996 !important;
+    display: none !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+.chat-overlay.active {
+    display: block !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .chat-window.active {
+        position: fixed !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+        max-height: 100vh !important;
+        max-width: 100vw !important;
+    }
+    
+    .chat-widget {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+}
+</style>
+
+<!-- CHAT WIDGET HTML -->
+<div id="chat-widget" class="chat-widget">
+    <!-- Botón flotante del chat -->
+    <button id="chat-toggle" class="chat-toggle">
+        <span class="chat-icon">
+            <i class="fas fa-comments"></i>
+        </span>
+        <span class="chat-close-icon">
+            <i class="fas fa-times"></i>
+        </span>
+    </button>
+
+    <!-- Notificación de bienvenida -->
+    <div id="chat-notification" class="chat-notification">
+        💬 ¡Hola! ¿Necesitas asesoría legal en Andahuaylas?
+    </div>
+
+    <!-- Ventana del chat -->
+    <div id="chat-window" class="chat-window">
+        <!-- Header del chat -->
+        <div class="chat-header">
+            <div class="chat-avatar">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <div class="chat-info">
+                <h4>Asistente Legal TijaTija</h4>
+                <span class="chat-status">
+                    <span class="status-dot"></span>
+                    En línea - Andahuaylas
+                </span>
+            </div>
+            <button id="chat-minimize" class="chat-minimize">
+                <i class="fas fa-minus"></i>
+            </button>
         </div>
 
-        <!-- Ventana del chat -->
-        <div class="chat-window" id="chat-window">
-            <!-- Header del chat -->
-            <div class="chat-header">
-                <div class="chat-avatar">
-                    <i class="fas fa-balance-scale"></i>
+        <!-- Mensajes del chat -->
+        <div id="chat-messages" class="chat-messages">
+            <div class="message bot-message" id="welcome-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
                 </div>
-                <div class="chat-info">
-                    <h4>Asistente Legal TijaTija</h4>
-                    <span class="chat-status">
-                        <span class="status-dot"></span>
-                        En línea - Andahuaylas
-                    </span>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        ¡Bienvenido a TijaTija-Juridico! 👋<br><br>
+                        Soy tu asistente legal virtual especializado en Apurímac. Puedo ayudarte con:
+                        <br><br>
+                        📋 Derecho Civil y Familiar<br>
+                        ⚖️ Derecho Penal<br>
+                        💼 Derecho Laboral<br>
+                        🏢 Derecho Corporativo<br>
+                        📍 Legislación específica de Apurímac
+                        <br><br>
+                        ¿En qué puedo asistirte hoy?
+                    </div>
+                    <div class="message-time">Ahora</div>
                 </div>
-                <button class="chat-minimize" id="chat-minimize">
-                    <i class="fas fa-minus"></i>
+            </div>
+
+            <!-- Indicador de escritura -->
+            <div id="typing-indicator" class="typing-indicator">
+                <div class="typing-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="typing-bubble">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input del chat -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <textarea 
+                    id="chat-input" 
+                    class="chat-input" 
+                    placeholder="Escribe tu consulta legal aquí..."
+                    rows="1"
+                    maxlength="1000"
+                ></textarea>
+                <button id="chat-send" class="chat-send" disabled>
+                    <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-
-            <!-- Mensajes del chat -->
-            <div class="chat-messages" id="chat-messages">
-                <div class="message bot-message" id="welcome-message">
-                    <div class="message-avatar">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="message-content">
-                        <div class="message-bubble">
-                            ¡Bienvenido a TijaTija-Juridico! Soy tu asistente legal virtual. Puedo ayudarte con consultas sobre:
-                            <br><br>
-                            • Derecho Civil y Familiar<br>
-                            • Derecho Penal<br>
-                            • Derecho Laboral<br>
-                            • Derecho Corporativo<br>
-                            • Información legal específica de Apurímac
-                            <br><br>
-                            ¿En qué puedo asistirte hoy?
-                        </div>
-                        <div class="message-time">Ahora</div>
-                    </div>
-                </div>
+            <div id="chat-suggestions" class="chat-suggestions">
+                <button class="suggestion-btn" data-message="¿Qué documentos necesito para un divorcio en Apurímac?">
+                    📄 Documentos divorcio
+                </button>
+                <button class="suggestion-btn" data-message="¿Cuáles son mis derechos laborales en Perú?">
+                    💼 Derechos laborales
+                </button>
+                <button class="suggestion-btn" data-message="¿Cómo registro una empresa en Andahuaylas?">
+                    🏢 Registro empresa
+                </button>
+                <button class="suggestion-btn" data-message="¿Qué hacer en caso de accidente de tránsito en Apurímac?">
+                    🚗 Accidente tránsito
+                </button>
             </div>
-
-            <!-- Input del chat -->
-            <div class="chat-input-container">
-                <div class="chat-input-wrapper">
-                    <textarea 
-                        class="chat-input" 
-                        id="chat-input" 
-                        placeholder="Escribe tu consulta legal aquí..."
-                        rows="1"
-                        maxlength="1000"
-                    ></textarea>
-                    <button class="chat-send" id="chat-send" disabled>
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-                <div class="chat-suggestions" id="chat-suggestions">
-                    <button class="suggestion-btn" data-message="¿Qué documentos necesito para un divorcio en Apurímac?">
-                        📄 Documentos divorcio
-                    </button>
-                    <button class="suggestion-btn" data-message="¿Cuáles son mis derechos laborales en Perú?">
-                        💼 Derechos laborales
-                    </button>
-                    <button class="suggestion-btn" data-message="¿Cómo registro una empresa en Andahuaylas?">
-                        🏢 Registro empresa
-                    </button>
-                    <button class="suggestion-btn" data-message="¿Qué hacer en caso de accidente de tránsito en Apurímac?">
-                        🚗 Accidente tránsito
-                    </button>
-                </div>
-                <div class="chat-footer">
-                    <small>Powered by IA • TijaTija-Juridico • Este chat es confidencial</small>
-                </div>
+            <div class="chat-footer">
+                <small>🔒 Confidencial • Powered by IA • TijaTija-Juridico</small>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Overlay para móviles -->
-    <div class="chat-overlay" id="chat-overlay"></div>
+<!-- Overlay para móviles -->
+<div id="chat-overlay" class="chat-overlay"></div>
 
-    <!-- JavaScript -->
-    <script type="module">
-        // Importar módulos
-        import { initializeApp } from './public/assets/js/core/app.js';
-        import { LegalChatCore } from './public/assets/js/chat/chat-core.js';
-        
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 Iniciando TijaTija-Juridico...');
-            
-            try {
-                // Inicializar aplicación principal
-                const app = await initializeApp();
-                console.log('✅ Aplicación principal iniciada');
-                
-                // Inicializar chat después de un breve delay
-                setTimeout(async () => {
-                    try {
-                        window.legalChat = new LegalChatCore({
-                            webhookUrl: 'https://singular-dear-jaybird.ngrok-free.app/webhook/cfa4d4c3-0f1c-49bc-b1f9-4d5c4b719b44',
-                            enableNotifications: true,
-                            welcomeDelay: 3000
-                        });
-                        console.log('✅ Chat widget iniciado');
-                    } catch (chatError) {
-                        console.error('❌ Error iniciando chat:', chatError);
-                    }
-                }, 1000);
-                
-                console.log('✅ TijaTija-Juridico cargado completamente');
-                
-            } catch (error) {
-                console.error('❌ Error al inicializar la aplicación:', error);
-                // Mostrar mensaje de error al usuario
-                showErrorMessage();
-            }
-        });
-        
-        // Función para mostrar mensaje de error (fallback)
-        function showErrorMessage() {
-            const errorDiv = document.createElement('div');
-            errorDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #dc3545;
-                color: white;
-                padding: 15px 20px;
-                border-radius: 8px;
-                font-size: 14px;
-                z-index: 10000;
-                max-width: 300px;
-            `;
-            errorDiv.innerHTML = `
-                <strong>⚠️ Error de carga</strong><br>
-                Algunos componentes no se cargaron correctamente. 
-                Por favor, recarga la página.
-            `;
-            document.body.appendChild(errorDiv);
-            
-            setTimeout(() => errorDiv.remove(), 10000);
-        }
-    </script>
-
-    <!-- Script de diagnóstico (remover en producción) -->
-    <script src="public/assets/js/diagnostics.js"></script>
-
-    <!-- Scripts del chat -->
-    <script src="public/assets/js/chat/chat.js"></script>
-    <script src="public/assets/js/chat/chat-ai.js"></script>
+<!-- Scripts -->
+<script src="public/assets/js/main.js"></script>
+<script src="public/assets/js/chat.js"></script>
 </body>
 </html>

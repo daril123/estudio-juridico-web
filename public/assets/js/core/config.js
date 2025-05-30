@@ -132,6 +132,18 @@ export const CHAT_CONFIG = {
     // URL del webhook (configurable)
     webhookUrl: 'https://singular-dear-jaybird.ngrok-free.app/webhook/cfa4d4c3-0f1c-49bc-b1f9-4d5c4b719b44',
     
+    // Configuración de n8n
+    n8n: {
+        enabled: true,
+        timeout: 30000,
+        maxRetries: 3,
+        retryDelay: 1000,
+        cache: {
+            enabled: true,
+            timeout: 300000 // 5 minutos
+        }
+    },
+
     // Configuración de UI
     ui: {
         position: 'bottom-right',
