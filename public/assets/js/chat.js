@@ -1,213 +1,156 @@
-class Chat {
+/**
+ * CHAT WIDGET - ESTUDIO JURÍDICO
+ * Maneja la interfaz y funcionalidad del chat
+ */
+
+import { CHAT_CONFIG } from './core/config.js';
+import ChatAI from './chat/chat-ai.js';
+
+class ChatWidget {
     constructor() {
-        this.isOpen = false;
-        this.isTyping = false;
-        this.messageHistory = [];
         this.initializeElements();
-        this.bindEvents();
+        this.initializeEventListeners();
+        this.initializeChatAI();
+        this.showWelcomeNotification();
     }
 
     initializeElements() {
-        // Crear elementos del DOM
-        const chatHTML = `
-            <button class="chat-toggle" id="chat-toggle">
-                <i class="fas fa-comments chat-icon"></i>
-                <i class="fas fa-times chat-close-icon"></i>
-            </button>
-            <div class="chat-window" id="chat-window">
-                <div class="chat-header">
-                    <div class="chat-avatar">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="chat-info">
-                        <h4>Asistente Jurídico</h4>
-                        <div class="chat-status">
-                            <span class="status-dot"></span>
-                            En línea
-                        </div>
-                    </div>
-                    <button class="chat-minimize" id="chat-minimize">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                </div>
-                <div class="chat-messages" id="chat-messages"></div>
-                <div class="typing-indicator" id="typing-indicator">
-                    <i class="fas fa-robot"></i> escribiendo...
-                </div>
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <textarea class="chat-input" id="chat-input" placeholder="Escribe tu mensaje aquí..." rows="1"></textarea>
-                        <button class="chat-send" id="chat-send">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="chat-overlay" id="chat-overlay"></div>
-        `;
-
-        // Insertar el HTML en el body
-        document.body.insertAdjacentHTML('beforeend', chatHTML);
-
-        // Guardar referencias a los elementos
-        this.elements = {
-            toggle: document.getElementById('chat-toggle'),
-            window: document.getElementById('chat-window'),
-            messages: document.getElementById('chat-messages'),
-            input: document.getElementById('chat-input'),
-            send: document.getElementById('chat-send'),
-            minimize: document.getElementById('chat-minimize'),
-            typingIndicator: document.getElementById('typing-indicator'),
-            overlay: document.getElementById('chat-overlay')
-        };
+        // Elementos principales
+        this.widget = document.getElementById('chat-widget');
+        this.toggle = document.getElementById('chat-toggle');
+        this.window = document.getElementById('chat-window');
+        this.messages = document.getElementById('chat-messages');
+        this.input = document.getElementById('chat-input');
+        this.sendButton = document.getElementById('chat-send');
+        this.minimizeButton = document.getElementById('chat-minimize');
+        this.notification = document.getElementById('chat-notification');
+        this.overlay = document.getElementById('chat-overlay');
+        this.suggestions = document.getElementById('chat-suggestions');
+        this.typingIndicator = document.getElementById('typing-indicator');
     }
 
-    bindEvents() {
-        // Toggle del chat
-        this.elements.toggle.addEventListener('click', () => this.toggle());
-
+    initializeEventListeners() {
+        // Toggle chat
+        this.toggle.addEventListener('click', () => this.toggleChat());
+        
         // Minimizar chat
-        this.elements.minimize.addEventListener('click', () => this.close());
-
+        this.minimizeButton.addEventListener('click', () => this.minimizeChat());
+        
         // Enviar mensaje
-        this.elements.send.addEventListener('click', () => this.sendMessage());
-
-        // Input de texto
-        this.elements.input.addEventListener('keypress', (e) => {
+        this.sendButton.addEventListener('click', () => this.sendMessage());
+        this.input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 this.sendMessage();
             }
         });
-
-        this.elements.input.addEventListener('input', () => {
+        
+        // Auto-resize textarea
+        this.input.addEventListener('input', () => {
+            this.input.style.height = 'auto';
+            this.input.style.height = this.input.scrollHeight + 'px';
             this.updateSendButton();
-            this.autoResizeInput();
         });
-
+        
+        // Sugerencias rápidas
+        this.suggestions.querySelectorAll('.suggestion-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const message = btn.dataset.message;
+                this.input.value = message;
+                this.input.dispatchEvent(new Event('input'));
+                this.sendMessage();
+            });
+        });
+        
         // Overlay para móviles
-        this.elements.overlay.addEventListener('click', () => this.close());
-
-        // Tecla Escape para cerrar
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isOpen) {
-                this.close();
-            }
-        });
-
-        // Resize para responsive
-        window.addEventListener('resize', () => this.handleResize());
+        this.overlay.addEventListener('click', () => this.minimizeChat());
     }
 
-    toggle() {
-        if (this.isOpen) {
-            this.close();
-        } else {
-            this.open();
+    initializeChatAI() {
+        this.chatAI = new ChatAI();
+    }
+
+    showWelcomeNotification() {
+        setTimeout(() => {
+            this.notification.classList.add('show');
+            setTimeout(() => {
+                this.notification.classList.remove('show');
+            }, CHAT_CONFIG.behavior.notificationDuration);
+        }, CHAT_CONFIG.behavior.welcomeDelay);
+    }
+
+    toggleChat() {
+        this.window.classList.toggle('active');
+        this.toggle.classList.toggle('active');
+        this.overlay.classList.toggle('active');
+        
+        if (this.window.classList.contains('active')) {
+            this.input.focus();
         }
     }
 
-    open() {
-        this.isOpen = true;
-        this.elements.window.classList.add('active');
-        this.elements.toggle.classList.add('active');
-        this.elements.overlay.classList.add('active');
-        this.elements.input.focus();
-        this.handleResize();
+    minimizeChat() {
+        this.window.classList.remove('active');
+        this.toggle.classList.remove('active');
+        this.overlay.classList.remove('active');
     }
 
-    close() {
-        this.isOpen = false;
-        this.elements.window.classList.remove('active');
-        this.elements.toggle.classList.remove('active');
-        this.elements.overlay.classList.remove('active');
+    updateSendButton() {
+        const hasText = this.input.value.trim().length > 0;
+        this.sendButton.disabled = !hasText;
     }
 
-    handleResize() {
-        if (window.innerWidth <= 480) {
-            this.elements.overlay.style.display = this.isOpen ? 'block' : 'none';
-        } else {
-            this.elements.overlay.style.display = 'none';
-        }
-    }
-
-    sendMessage() {
-        const message = this.elements.input.value.trim();
+    async sendMessage() {
+        const message = this.input.value.trim();
         if (!message) return;
 
-        // Agregar mensaje del usuario
-        this.addMessage(message, false);
-
         // Limpiar input
-        this.elements.input.value = '';
+        this.input.value = '';
+        this.input.style.height = 'auto';
         this.updateSendButton();
-        this.autoResizeInput();
 
-        // Simular respuesta del bot
-        this.showTyping();
-        setTimeout(() => {
-            this.hideTyping();
-            this.addMessage('Gracias por tu mensaje. ¿En qué más puedo ayudarte?', true);
-        }, 1500);
+        // Enviar mensaje
+        await this.chatAI.sendMessage(message);
     }
 
-    addMessage(content, isBot = true) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+    addMessage(message, isBot = true) {
+        // Reemplazar saltos de línea por <br>
+        const formattedMessage = (message || '').replace(/\n/g, '<br>');
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
         
-        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        messageDiv.innerHTML = `
+        const content = `
             <div class="message-avatar">
                 <i class="fas fa-${isBot ? 'robot' : 'user'}"></i>
             </div>
             <div class="message-content">
                 <div class="message-bubble">
-                    ${content}
+                    ${formattedMessage}
                 </div>
-                <div class="message-time">${time}</div>
+                <div class="message-time">Ahora</div>
             </div>
         `;
-
-        this.elements.messages.appendChild(messageDiv);
-        this.scrollToBottom();
-
-        // Guardar en historial
-        this.messageHistory.push({
-            content,
-            isBot,
-            timestamp: new Date()
-        });
-    }
-
-    showTyping() {
-        this.isTyping = true;
-        this.elements.typingIndicator.classList.add('active');
+        
+        messageElement.innerHTML = content;
+        this.messages.appendChild(messageElement);
         this.scrollToBottom();
     }
 
-    hideTyping() {
-        this.isTyping = false;
-        this.elements.typingIndicator.classList.remove('active');
+    showTypingIndicator() {
+        this.typingIndicator.style.display = 'flex';
+        this.scrollToBottom();
     }
 
-    updateSendButton() {
-        const hasText = this.elements.input.value.trim().length > 0;
-        this.elements.send.classList.toggle('active', hasText);
-    }
-
-    autoResizeInput() {
-        const input = this.elements.input;
-        input.style.height = 'auto';
-        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    hideTypingIndicator() {
+        this.typingIndicator.style.display = 'none';
     }
 
     scrollToBottom() {
-        this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
+        this.messages.scrollTop = this.messages.scrollHeight;
     }
 }
 
 // Inicializar el chat cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    window.chat = new Chat();
+    window.chatWidget = new ChatWidget();
 }); 

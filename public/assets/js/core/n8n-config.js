@@ -128,15 +128,28 @@ export class N8NIntegration {
                 method: 'POST',
                 headers: this.config.api.headers,
                 body: JSON.stringify(payload),
-                timeout: this.config.api.timeout
+                // timeout: this.config.api.timeout // fetch estándar no soporta timeout nativo
             });
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
-            const data = await response.json();
-            return this.processResponse(data);
+            // Verificar si la respuesta es JSON
+            const contentType = response.headers.get('content-type');
+            let data;
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+                return this.processResponse(data);
+            } else {
+                // Si no es JSON, obtener como texto y mostrarlo directamente
+                const text = await response.text();
+                if (text && text.trim()) {
+                    return text.trim();
+                } else {
+                    throw new Error('La respuesta del servidor está vacía.');
+                }
+            }
         } catch (error) {
             console.error('Error al enviar mensaje a n8n:', error);
             throw error;
